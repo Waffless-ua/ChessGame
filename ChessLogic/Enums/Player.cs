@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChessLogic
+﻿namespace ChessLogic
 {
     public enum Player
     {
@@ -20,7 +14,7 @@ namespace ChessLogic
             return player switch
             {
                 Player.White => Player.Black,
-                Player.Black => Player.None,
+                Player.Black => Player.White,
                 _ => Player.None,
             };
         }
