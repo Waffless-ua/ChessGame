@@ -74,5 +74,12 @@ namespace ChessLogic
         public override IEnumerable<Move> GetMoves(Position from, Board board)
             => ForwardMoves(from, board).Concat(DiagnalMoves(from, board));
 
+        public override bool CanCaptureOpponentKing(Position from, Board board)
+            => DiagnalMoves(from, board).Any(move =>
+            {
+                Piece piece = board[move.ToPos];
+                return piece != null && piece.Type == PieceType.King;
+            });
+
     }
 }

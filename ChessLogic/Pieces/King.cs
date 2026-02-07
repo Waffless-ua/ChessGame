@@ -50,5 +50,12 @@
             foreach (Position to in MovePosition(from, board))
                 yield return new NormalMove(from, to);
         }
+
+        public override bool CanCaptureOpponentKing(Position from, Board board)
+            => MovePosition(from, board).Any(to =>
+            {
+                Piece piece = board[to];
+                return piece != null && piece.Type == PieceType.King;
+            });
     }
 }
