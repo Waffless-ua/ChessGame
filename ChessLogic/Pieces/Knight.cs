@@ -1,4 +1,6 @@
-﻿namespace ChessLogic
+﻿using System.Runtime.CompilerServices;
+
+namespace ChessLogic
 {
     public class Knight : Piece
     {
@@ -16,5 +18,28 @@
             copy.HasMoved = HasMoved;
             return copy;
         }
+
+        private static IEnumerable<Position> PotentialToPositions(Position from)
+        {
+            foreach (Direction vdir in new Direction[] { Direction.North, Direction.South })
+            {
+                foreach (Direction hdir in new Direction[] { Direction.West, Direction.East })
+                {
+                    yield return from + 2 * vdir + hdir;
+                    yield return from + 2 * hdir + vdir;
+                }
+            }
+        }
+
+        private IEnumerable<Position> MovePositions(Position from, Board board)
+            => PotentialToPositions(from)
+                .Where(pos => Board.IsInside(pos)
+                && (board.IsEmpty(pos) ||
+                board[pos].Color != Color));
+
+
+        public override IEnumerable<Move> GetMoves(Position from, Board board)
+            => MovePositions(from, board).Select(to => new NormalMove(from, to));
+
     }
 }

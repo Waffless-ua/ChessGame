@@ -1,13 +1,8 @@
 ﻿using ChessLogic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ChessUI
@@ -18,16 +13,19 @@ namespace ChessUI
     public partial class MainWindow : Window
     {
         private readonly Image[,] pieceImages = new Image[8, 8];
+        private readonly Rectangle[,] highlights = new Rectangle[8, 8];
+        private readonly Dictionary<Position, Move> moveCache = new Dictionary<Position, Move>();
 
         private GameState gameState;
+        private Position selectedPos = null;
         public MainWindow()
         {
             InitializeComponent();
             InitializeBoard();
 
             gameState = new GameState(Player.White, Board.Initial());
-
             DrawBoard(gameState.Board);
+            SetCursor(gameState.CurrentPlayer);
         }
 
         private void InitializeBoard()
@@ -39,6 +37,11 @@ namespace ChessUI
                     Image iamge = new Image();
                     pieceImages[r, c] = iamge;
                     PieceGrid.Children.Add(iamge);
+
+
+                    Rectangle highligts = new Rectangle();
+                    highlights[r, c] = highligts;
+                    HighlightGrid.Children.Add(highligts);
                 }
             }
         }
@@ -57,5 +60,98 @@ namespace ChessUI
             }
 
         }
+
+        private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Point point = e.GetPosition(BoardGrid);
+            Position pos = ToSquarePosition(point);
+
+            if (selectedPos == null)
+            {
+                OnFromPositionSelected(pos);
+            }
+            else
+            {
+                OnToPositionSelected(pos);
+
+            }
+        }
+
+        private void OnFromPositionSelected(Position pos)
+        {
+            IEnumerable<Move> moves = gameState.LegalMovesForPiece(pos);
+
+            if (moves.Any())
+            {
+                selectedPos = pos;
+                CacheMoves(moves);
+                ShowHighlights();
+            }
+        }
+
+        private void OnToPositionSelected(Position pos)
+        {
+            selectedPos = null;
+            HideHighlights();
+
+            if (moveCache.TryGetValue(pos, out Move move))
+            {
+                HandleMove(move);
+            }
+        }
+        private void HandleMove(Move move)
+        {
+            gameState.MakeMove(move);
+            DrawBoard(gameState.Board);
+            SetCursor(gameState.CurrentPlayer);
+        }
+
+        private Position ToSquarePosition(Point point)
+        {
+            double squareSize = BoardGrid.ActualWidth / 8;
+
+            int row = (int)(point.Y / squareSize);
+            int column = (int)(point.X / squareSize);
+
+            return new Position(row, column);
+        }
+
+
+
+
+
+        private void CacheMoves(IEnumerable<Move> moves)
+        {
+            moveCache.Clear();
+
+            foreach (Move move in moves)
+            {
+                moveCache[move.ToPos] = move;
+            }
+        }
+
+
+        private void ShowHighlights()
+        {
+            Color color = Color.FromArgb(150, 125, 255, 125);
+
+            foreach (Position to in moveCache.Keys)
+            {
+                highlights[to.Row, to.Column].Fill = new SolidColorBrush(color);
+            }
+        }
+
+        private void HideHighlights()
+        {
+            foreach (Position to in moveCache.Keys)
+            {
+                highlights[to.Row, to.Column].Fill = Brushes.Transparent;
+            }
+        }
+
+        private void SetCursor(Player player)
+            => Cursor = player == Player.White ? 
+                        ChessCursors.WhiteCursor : 
+                        ChessCursors.BlackCursor;
     }
 }
