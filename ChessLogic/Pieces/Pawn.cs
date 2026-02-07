@@ -60,7 +60,7 @@ namespace ChessLogic
         {
             foreach (Direction dir in new Direction[] {Direction.West, Direction.East})
             {
-                Position to = from + dir;
+                Position to = from + forward + dir;
 
 
                 if (CanCaptureAt(to, board))
