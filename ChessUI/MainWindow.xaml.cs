@@ -27,7 +27,11 @@ namespace ChessUI
             DrawBoard(gameState.Board);
             SetCursor(gameState.CurrentPlayer);
         }
-
+        private void SetCursor(Player player) => Cursor = 
+            player == Player.White ? 
+            ChessCursors.WhiteCursor : 
+            ChessCursors.BlackCursor;
+        private bool IsMenuOnScreen() => MenuContainer.Content != null;
         private void InitializeBoard()
         {
             for (int r = 0; r < 8; r++)
@@ -56,13 +60,16 @@ namespace ChessUI
                     Piece piece = board[r, c];
                     pieceImages[r,c].Source = Images.GetImage(piece);
                 }
-
             }
 
         }
 
         private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            if (IsMenuOnScreen())
+                return;
+
+
             Point point = e.GetPosition(BoardGrid);
             Position pos = ToSquarePosition(point);
 
@@ -104,6 +111,11 @@ namespace ChessUI
             gameState.MakeMove(move);
             DrawBoard(gameState.Board);
             SetCursor(gameState.CurrentPlayer);
+
+            if (gameState.IsGameOver())
+            {
+                ShowGameOver();
+            }
         }
 
         private Position ToSquarePosition(Point point)
@@ -115,10 +127,6 @@ namespace ChessUI
 
             return new Position(row, column);
         }
-
-
-
-
 
         private void CacheMoves(IEnumerable<Move> moves)
         {
@@ -149,9 +157,33 @@ namespace ChessUI
             }
         }
 
-        private void SetCursor(Player player)
-            => Cursor = player == Player.White ? 
-                        ChessCursors.WhiteCursor : 
-                        ChessCursors.BlackCursor;
+        private void ShowGameOver()
+        {
+            GameOverMenu gameOverMenu = new GameOverMenu(gameState);
+            MenuContainer.Content = gameOverMenu;
+
+            gameOverMenu.OptionSelected += option =>
+            {
+                if (option == Option.Restart)
+                {
+                    MenuContainer.Content = null;
+                    RestartGame();
+                }
+                else
+                {
+                    Application.Current.Shutdown();
+                }
+            };
+
+        }
+
+        private void RestartGame()
+        {
+            HideHighlights();
+            moveCache.Clear();
+            gameState = new GameState(Player.White, Board.Initial());
+            DrawBoard(gameState.Board);
+            SetCursor(gameState.CurrentPlayer);
+        }
     }
 }
