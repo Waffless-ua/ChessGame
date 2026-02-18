@@ -14,9 +14,9 @@ namespace ChessLogic
         public readonly static Direction West = new Direction(0, -1);
 
         public readonly static Direction NorthEast = North + East;
-        public readonly static Direction NorthWest = NorthEast + West;
+        public readonly static Direction NorthWest = North + West;
         public readonly static Direction SouthEast = South + East;
-        public readonly static Direction SouthWest = SouthEast + West;
+        public readonly static Direction SouthWest = South + West;
 
         public int RowDelta { get; }
         public int ColumnDelta { get; }
