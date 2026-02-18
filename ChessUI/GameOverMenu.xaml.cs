@@ -39,11 +39,21 @@ namespace ChessUI
         private static string GetReasonText(EndReason reason, Player currentPlayer) =>
             reason switch
             {
-                EndReason.Stalemate => $"STALEMATE - {PlayerString(currentPlayer)} CAN'T MOVE",
-                EndReason.Checkmate => $"CHECKMATE - {PlayerString(currentPlayer)} CAN'T MOVE",
-                EndReason.FiftyMoveRule => $"FiftyMoveRule",
-                EndReason.InsufficientMaterial => $"InsufficientMaterial",
-                EndReason.ThreefoldRepetition => $"ThreefoldRepetition",
+                EndReason.Stalemate => 
+                    $"STALEMATE - {PlayerString(currentPlayer)} CAN'T MOVE",
+
+                EndReason.Checkmate => 
+                    $"CHECKMATE - {PlayerString(currentPlayer)} CAN'T MOVE",
+
+                EndReason.FiftyMoveRule =>
+                    "DRAW — Fifty-move rule.",
+
+                EndReason.ThreefoldRepetition =>
+                    "DRAW — Threefold repetition.",
+
+                EndReason.InsufficientMaterial =>
+                    "DRAW — Insufficient material to checkmate.",
+
                 _ => ""
             };
 
