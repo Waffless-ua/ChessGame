@@ -1,0 +1,34 @@
+﻿<Window x:Class="ChessGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChessGame"
+        
+        xmlns:viewmodels="clr-namespace:ChessGame.ViewModel"
+        xmlns:views="clr-namespace:ChessGame.View.UserControls"
+        
+        mc:Ignorable="d"
+        Title="ChessGame"
+        MinWidth="640" MinHeight="480">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodels:MenuViewModel}">
+            <views:MenuView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SearchGameViewModel}">
+            <views:SearchGameView />
+        </DataTemplate>
+    </Window.Resources>
+
+
+    <Grid>
+
+        <Rectangle Fill="{StaticResource BackgroundColor}" />
+
+        <Viewbox>
+            <ContentControl Content="{Binding CurrentView}" />
+        </Viewbox>
+
+    </Grid>
+</Window>
