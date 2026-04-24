@@ -6,15 +6,27 @@ using System.Threading.Tasks;
 
 namespace ChessGame.Model
 {
-    public class GameState
+    public class GameState : IGameState
     {
+        public Player ThisPlayer { get; private set; }
         public Player CurrentPlayer { get; private set; }
-        public Board Board { get; }
+        public Board Board { get; private set; }
+        public event Action<Board> BoardUpdated;
 
-        public GameState(Player currentPlayer, Board board) 
+        public GameState() { }
+
+        public void Initialize(Player player)
         {
-            Board = board;
-            CurrentPlayer = currentPlayer;
+            ThisPlayer = player;
+            Board = Board.Initial();
+
+            CurrentPlayer = Player.White;
+            BoardUpdated?.Invoke(Board);
+        }
+
+        public bool IsCurrentPlayer()
+        {
+            return ThisPlayer == CurrentPlayer;
         }
 
         public IEnumerable<Move> LegalMovesForPiece(Position pos)
@@ -30,6 +42,7 @@ namespace ChessGame.Model
         public void MakeMove(Move move)
         {
             move.Execute(Board);
+            BoardUpdated?.Invoke(this.Board);
             CurrentPlayer = CurrentPlayer.Opponent();
         }
 

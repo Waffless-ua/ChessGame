@@ -1,14 +1,29 @@
 ﻿<Application x:Class="ChessGame.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ChessGame"
-             StartupUri="View/Window/MainWindow.xaml">
+             xmlns:local="clr-namespace:ChessGame">
 
     <Application.Resources>
         <SolidColorBrush x:Key="TextColor" Color="#f5f7f6" />
         <SolidColorBrush x:Key="BackgroundColor" Color="#7a4d3e" />
         <SolidColorBrush x:Key="ButtonColor" Color="#32a852" />
         <SolidColorBrush x:Key="BorderColor" Color="#452b22" />
+
+        <Style x:Key="SelectionBorderStyle" TargetType="Border">
+            <Setter Property="BorderBrush" Value="#555555" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="CornerRadius" Value="15" />
+            <Setter Property="Background" Value="#2A2A2A" />
+            <Setter Property="Margin" Value="10" />
+            <Setter Property="Padding" Value="10" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#4CAF50" />
+                    <Setter Property="Background" Value="#333333" />
+                    <Setter Property="Cursor" Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <Style TargetType="Border" x:Key="BorderStyle">
             <Setter Property="BorderThickness" Value="4"/>
