@@ -24,7 +24,8 @@
                  Style="{StaticResource TextBoxStyle}"
                  Height="40"
                  MaxLength="15"
-                 ToolTip="Введіть IP"/>
+                 ToolTip="Введіть IP"
+                 Text="{Binding IpAddress}"/>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>

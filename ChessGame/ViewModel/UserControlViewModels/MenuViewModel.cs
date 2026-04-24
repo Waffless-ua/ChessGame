@@ -1,9 +1,6 @@
 ﻿using ChessGame.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ChessGame.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -11,12 +8,16 @@ namespace ChessGame.ViewModel
 {
     public class MenuViewModel : BaseViewModel
     {
+        private readonly INavigationService _navigation;
+
         public ICommand CreateGameCommand { get; }
         public ICommand SearchGameCommand { get; }
         public ICommand ExitCommand { get; }
 
-        public MenuViewModel()
+        public MenuViewModel(INavigationService navigation)
         {
+            _navigation = navigation;
+
             CreateGameCommand = new RelayCommand(CreateGame);
             SearchGameCommand = new RelayCommand(SearchGame);
             ExitCommand = new RelayCommand(Exit);
@@ -24,12 +25,21 @@ namespace ChessGame.ViewModel
 
         public void CreateGame(object obj)
         {
-            MainViewModel.Instance.CurrentView = new GameViewModel();
+            var app = (App)Application.Current;
+            var serviceProvider = app.ServiceProvider;
+
+            var lobbyVM = serviceProvider.GetRequiredService<LobbyViewModel>();
+
+            lobbyVM.Configure(isHost: true);
+
+            _navigation.NavigateTo(lobbyVM);
         }
+
         public void SearchGame(object obj)
         {
-            MainViewModel.Instance.CurrentView = new SearchGameViewModel();
+            _navigation.NavigateTo<SearchGameViewModel>();
         }
+
         public void Exit(object obj)
         {
             Application.Current.Shutdown();

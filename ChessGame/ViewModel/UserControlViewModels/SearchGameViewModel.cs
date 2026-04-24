@@ -1,31 +1,58 @@
 ﻿using ChessGame.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ChessGame.Model;
+using ChessGame.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ChessGame.ViewModel
 {
     public class SearchGameViewModel : BaseViewModel
     {
+        private readonly INavigationService _navigation;
+        private string _ipAddress = "127.0.0.1";
+
+        public string IpAddress
+        {
+            get => _ipAddress;
+            set
+            {
+                _ipAddress = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public ICommand JoinCommand { get; }
         public ICommand MenuCommand { get; }
 
-        public SearchGameViewModel()
+        public SearchGameViewModel(INavigationService navigation)
         {
-            JoinCommand = new RelayCommand(SearchGame);
+            _navigation = navigation;
+
+            JoinCommand = new RelayCommand(JoinGame);
             MenuCommand = new RelayCommand(ReturnToMenu);
         }
-        public void SearchGame(object parameter)
+
+        private void JoinGame(object parameter)
         {
-            // Process of searching game
+            if (string.IsNullOrWhiteSpace(IpAddress))
+            {
+                MessageBox.Show("Будь ласка, введіть IP адресу хоста.");
+                return;
+            }
+
+            var sp = ((App)Application.Current).ServiceProvider;
+
+            var lobbyVM = sp.GetRequiredService<LobbyViewModel>();
+
+            lobbyVM.Configure(isHost: false, ip: IpAddress);
+
+            _navigation.NavigateTo(lobbyVM);
         }
 
-        public void ReturnToMenu(object parameter)
+        private void ReturnToMenu(object parameter)
         {
-            MainViewModel.Instance.CurrentView = new MenuViewModel();
+            _navigation.NavigateTo<MenuViewModel>();
         }
     }
 }

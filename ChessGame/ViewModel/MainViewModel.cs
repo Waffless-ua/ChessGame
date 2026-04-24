@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChessGame.Services.Interfaces;
 
 namespace ChessGame.ViewModel
 {
     public class MainViewModel : BaseViewModel
     {
-        private static MainViewModel _instance;
-        public static MainViewModel Instance => _instance ??= new MainViewModel();
+        private readonly INavigationService _navigation;
 
-        private BaseViewModel _currentView = new MenuViewModel();
-        public BaseViewModel CurrentView
+        public BaseViewModel CurrentView => _navigation.CurrentView;
+
+        public MainViewModel(INavigationService navigation)
         {
-            get { return _currentView; }
-            set
+            _navigation = navigation;
+
+            _navigation.PropertyChanged += (s, e) =>
             {
-                if (_currentView != value)
+                if (e.PropertyName == nameof(INavigationService.CurrentView))
                 {
-                    _currentView = value;
-                    NotifyPropertyChanged();
+                    NotifyPropertyChanged(nameof(CurrentView));
                 }
-            }
-        }
-        private MainViewModel()
-        {
+            };
         }
     }
 }

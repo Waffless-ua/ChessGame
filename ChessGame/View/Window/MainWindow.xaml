@@ -22,6 +22,9 @@
         <DataTemplate DataType="{x:Type viewmodels:GameViewModel}">
             <views:GameView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:LobbyViewModel}">
+            <views:LobbyView />
+        </DataTemplate>
     </Window.Resources>
 
 

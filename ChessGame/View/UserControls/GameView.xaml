@@ -9,33 +9,39 @@
              Background="{StaticResource BackgroundColor}">
     <Viewbox>
         <Grid x:Name="BoardGrid"
-              Width="600"
-              Height="600"
-              >
+      Width="600"
+      Height="600"
+      RenderTransformOrigin="0.5,0.5">
+
+            <Grid.Resources>
+                <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}"/>
+            </Grid.Resources>
+
+            <Grid.RenderTransform>
+                <RotateTransform Angle="{Binding BoardRotation}" />
+            </Grid.RenderTransform>
+
             <Grid.Background>
                 <ImageBrush ImageSource="/Assets/Board.png"/>
             </Grid.Background>
 
 
+            <ItemsControl ItemsSource="{Binding HighlightsViewModel.HighlightCells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                <ItemsControl ItemsSource="{Binding HighlightCells}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Rectangle Fill="{Binding Brush}" Opacity="0.5"/>
-                        </DataTemplate>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="{Binding Brush}" Opacity="0.7"/>
+                    </DataTemplate>
                 </ItemsControl.ItemTemplate>
-                </ItemsControl>
+            </ItemsControl>
 
 
-
-
-                <ItemsControl ItemsSource="{Binding BoardCells}">
+            <ItemsControl ItemsSource="{Binding CellsViewModel.BoardCells}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid x:Name="PieceGrid" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -45,14 +51,22 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                CommandParameter="{Binding Position}"
-                                Background="Transparent"
-                                BorderThickness="0">
-                            <Image Source="{Binding ImagePath}" Stretch="Uniform"/>
+                        CommandParameter="{Binding Position}"
+                        Background="Transparent"
+                        BorderThickness="0">
+
+                            <Image Source="{Binding ImagePath}" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
+                                <Image.RenderTransform>
+                                    <RotateTransform Angle="{Binding DataContext.BoardRotation, Source={StaticResource ProxyElement}}" />
+                                </Image.RenderTransform>
+                            </Image>
+
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}"/>
         </Grid>
     </Viewbox>
 </UserControl>
