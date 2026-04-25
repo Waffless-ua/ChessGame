@@ -1,52 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ChessGame.Model;
 
-namespace ChessGame.Model
+namespace ChessGame.Services
 {
     public class GameState : IGameState
     {
         public Player ThisPlayer { get; private set; }
-        public Player CurrentPlayer { get; private set; }
-        public Board Board { get; private set; }
-        public event Action<Board> BoardUpdated;
-        public event Action<Player> ThisPlayerUpdated;
+        public Player CurrentPlayer { get; set; }
+        public Board Board { get; set; }
 
-        public GameState() { }
-
-        public void Initialize(Player player)
+        public void Initialize(Player player, Board board)
         {
             ThisPlayer = player;
-            Board = Board.Initial();
-
             CurrentPlayer = Player.White;
-            BoardUpdated?.Invoke(Board);
-            ThisPlayerUpdated?.Invoke(ThisPlayer);
+            Board = board;
         }
 
-        public bool IsCurrentPlayer()
-        {
-            return ThisPlayer == CurrentPlayer;
-        }
-
-        public IEnumerable<Move> LegalMovesForPiece(Position pos)
-        {
-            if (Board.IsEmpty(pos) || Board[pos].Color != CurrentPlayer)
-            {
-                return Enumerable.Empty<Move>();
-            }
-
-            Piece piece = Board[pos];
-            return piece.GetMoves(pos, Board);
-        }
-        public void MakeMove(Move move)
-        {
-            move.Execute(Board);
-            BoardUpdated?.Invoke(this.Board);
-            CurrentPlayer = CurrentPlayer.Opponent();
-        }
-
+        public bool IsInitialized => Board != null;
     }
 }

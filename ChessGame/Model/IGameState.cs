@@ -9,12 +9,9 @@ namespace ChessGame.Model
     public interface IGameState
     {
         Player ThisPlayer { get; }
-        public Board Board { get; }
-        public event Action<Board> BoardUpdated;
-        public event Action<Player> ThisPlayerUpdated;
-        public void Initialize(Player player);
-        public bool IsCurrentPlayer();
-        public IEnumerable<Move> LegalMovesForPiece(Position pos);
-        public void MakeMove(Move move);
+        Player CurrentPlayer { get; set; }
+        Board Board { get; set; }
+
+        void Initialize(Player thisPlayer, Board board);
     }
 }

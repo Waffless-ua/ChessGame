@@ -7,24 +7,24 @@ namespace ChessGame.Model.DTO.Handlers
 {
     public class MoveHandler : IMessageHandler<DtoMove>
     {
-        private readonly IGameState _gameState;
+        private readonly IGameService _gameService;
         private readonly IDtoMoveFactory _moveFactory;
 
-        public MoveHandler(IDtoMoveFactory moveFactory, IGameState gameState)
+        public MoveHandler(IDtoMoveFactory moveFactory, IGameService gameService)
         {
             _moveFactory = moveFactory;
-            _gameState = gameState;
+            _gameService = gameService;
         }
 
         public Task HandleAsync(DtoMove message)
         {
             var move = _moveFactory.GetMoveFromDTO(message);
 
-            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 try
                 {
-                    _gameState.MakeMove(move);
+                    _gameService.MakeMove(move, sendToOpponent: false);
                 }
                 catch (Exception ex)
                 {

@@ -25,9 +25,10 @@
                 <RowDefinition></RowDefinition>
                 <RowDefinition Height="0.5*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Button Grid.Column="1" Grid.Row="1"
-                    Command="{Binding StartGameCommand}">
-                <TextBlock Style="{StaticResource TextStyle}" FontSize="32">Почати</TextBlock>
+            <Button Grid.Column="1"
+                    Grid.Row="1"
+                    Command="{Binding StartGameCommand}"
+                    Content="Почати">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -38,6 +39,7 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
+
             </Button>
         </Grid>
     </Grid>

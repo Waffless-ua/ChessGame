@@ -6,12 +6,12 @@ namespace ChessGame.Model.DTO.Handlers
 {
     public class StartGameHandler : IMessageHandler<DtoStartGame>
     {
-        private readonly IGameState _gameState;
+        private readonly IGameService _gameService;
         private readonly INavigationService _navigationService;
 
-        public StartGameHandler(IGameState gameState, INavigationService navigationService)
+        public StartGameHandler(IGameService gameService, INavigationService navigationService)
         {
-            _gameState = gameState;
+            _gameService = gameService;
             _navigationService = navigationService;
         }
 
@@ -19,7 +19,7 @@ namespace ChessGame.Model.DTO.Handlers
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
-                _gameState.Initialize(message.StartingSide);
+                _gameService.StartGame(message.StartingSide);
                 _navigationService.NavigateTo<GameViewModel>();
             });
 

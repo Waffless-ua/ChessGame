@@ -30,7 +30,7 @@ namespace ChessGame.ViewModel
 
             var lobbyVM = serviceProvider.GetRequiredService<LobbyViewModel>();
 
-            lobbyVM.Configure(isHost: true);
+            lobbyVM.ConfigureAsync(isHost: true);
 
             _navigation.NavigateTo(lobbyVM);
         }

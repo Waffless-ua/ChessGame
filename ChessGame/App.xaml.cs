@@ -25,7 +25,12 @@ namespace ChessGame
             services.AddSingleton<IDtoResolver, DtoResolver>();
             services.AddSingleton<IDtoMoveFactory, DtoMoveFactory>();
             services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
+
+            services.AddSingleton<ILobbyService, LobbyService>();
+
+            services.AddSingleton<IBoardFactory, BoardFactory>();
             services.AddSingleton<IGameState, GameState>();
+            services.AddSingleton<IGameService, GameService>();
 
             services.AddTransient<IMessageHandler<DtoMove>, MoveHandler>();
             services.AddTransient<IMessageHandler<DtoStartGame>, StartGameHandler>();

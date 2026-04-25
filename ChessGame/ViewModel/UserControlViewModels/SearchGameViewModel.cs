@@ -45,7 +45,7 @@ namespace ChessGame.ViewModel
 
             var lobbyVM = sp.GetRequiredService<LobbyViewModel>();
 
-            lobbyVM.Configure(isHost: false, ip: IpAddress);
+            lobbyVM.ConfigureAsync(isHost: false, IpAddress);
 
             _navigation.NavigateTo(lobbyVM);
         }

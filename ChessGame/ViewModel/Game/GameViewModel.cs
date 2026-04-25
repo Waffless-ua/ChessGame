@@ -34,55 +34,44 @@ namespace ChessGame.ViewModel
                 NotifyPropertyChanged();
             }
         }
-
-        private IGameState GameState { get; }
-
-        private INetworkService _networkService;
+        private readonly IGameService _gameService;
 
         public ICommand CellClickCommand { get; }
-        public GameViewModel(INetworkService networkService, IGameState gameState)
+        public GameViewModel(IGameService gameService)
         {
-            GameState = gameState;
-            _networkService = networkService;
-            IsFlipped(GameState.ThisPlayer);
+            _gameService = gameService;
             InitializeBoard();
 
             CellClickCommand = new RelayCommand(OnCellClick);
 
-            GameState.BoardUpdated += OnBoardUpdated;
+            _gameService.BoardChanged += OnBoardUpdated;
 
-            OnBoardUpdated(GameState.Board);
+            IsFlipped();
+            OnBoardUpdated();
         }
-        private void OnBoardUpdated(Board board)
+        private void OnBoardUpdated()
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
                 SelectedPos = null;
                 HighlightsViewModel.HideHighlights();
-                CellsViewModel.DrawBoard(board);
+
+                CellsViewModel.DrawBoard(_gameService.GetBoard());
             });
         }
 
-        private void IsFlipped(Player player)
+        private void IsFlipped()
         {
-            if (player == Player.Black)
-            {
-                BoardRotation = 180;
-            }
-            else
-            {
-                BoardRotation = 0;
-            }
+            BoardRotation = _gameService.ThisPlayer == Player.Black ? 180 : 0;
         }
 
         private void InitializeBoard()
         {
             CellsViewModel = new CellsViewModel(moveCache);
             HighlightsViewModel = new HighlightsViewModel(moveCache);
+            
             CellsViewModel.InitializeCells();
             HighlightsViewModel.InitializeHighlights();
-
-            IsFlipped(GameState.ThisPlayer);
         }
         private void CacheMoves(IEnumerable<Move> moves)
         {
@@ -96,14 +85,10 @@ namespace ChessGame.ViewModel
         private void OnCellClick(object obj)
         {
             if (obj is not Position pos)
-            {
                 return;
-            }
 
-            if (!GameState.IsCurrentPlayer())
-            {
+            if (!_gameService.IsCurrentPlayer())
                 return;
-            }
 
             if (SelectedPos == null)
             {
@@ -117,14 +102,14 @@ namespace ChessGame.ViewModel
 
         private void OnFromPositionSelected(Position pos)
         {
-            IEnumerable<Move> moves = GameState.LegalMovesForPiece(pos);
+            var moves = _gameService.GetLegalMoves(pos);
 
-            if (moves.Any())
-            {
-                SelectedPos = pos;
-                CacheMoves(moves);
-                HighlightsViewModel.ShowHighlights();
-            }
+            if (!moves.Any())
+                return;
+
+            SelectedPos = pos;
+            CacheMoves(moves);
+            HighlightsViewModel.ShowHighlights();
         }
         private void OnToPositionSelected(Position pos)
         {
@@ -133,14 +118,8 @@ namespace ChessGame.ViewModel
 
             if(moveCache.TryGetValue(pos, out Move move))
             {
-                HandleMove(move);
+                _gameService.MakeMove(move, sendToOpponent: true);
             }
-        }
-
-        private void HandleMove(Move move)
-        {
-            GameState.MakeMove(move);
-            _networkService.SendAsync(DtoType.Move, new DtoMove(move));
         }
     }
 }
