@@ -12,6 +12,7 @@ namespace ChessGame.Model
         public Player CurrentPlayer { get; private set; }
         public Board Board { get; private set; }
         public event Action<Board> BoardUpdated;
+        public event Action<Player> ThisPlayerUpdated;
 
         public GameState() { }
 
@@ -22,6 +23,7 @@ namespace ChessGame.Model
 
             CurrentPlayer = Player.White;
             BoardUpdated?.Invoke(Board);
+            ThisPlayerUpdated?.Invoke(ThisPlayer);
         }
 
         public bool IsCurrentPlayer()

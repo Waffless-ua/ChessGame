@@ -94,7 +94,6 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="Cursor" Value="Hand"/>
 
             <Setter Property="Template">
                 <Setter.Value>

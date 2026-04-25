@@ -11,6 +11,7 @@ namespace ChessGame.Model
         Player ThisPlayer { get; }
         public Board Board { get; }
         public event Action<Board> BoardUpdated;
+        public event Action<Player> ThisPlayerUpdated;
         public void Initialize(Player player);
         public bool IsCurrentPlayer();
         public IEnumerable<Move> LegalMovesForPiece(Position pos);

@@ -37,4 +37,19 @@
         </Viewbox>
 
     </Grid>
+
+    <Window.Style>
+        <Style TargetType="Window">
+            <Setter Property="Cursor" Value="{x:Static local:ChessCursors.WhiteCursor}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding CurrentPlayerSide}" Value="{x:Static local:Player.White}">
+                    <Setter Property="Cursor" Value="{x:Static local:ChessCursors.WhiteCursor}" />
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding CurrentPlayerSide}" Value="{x:Static local:Player.Black}">
+                    <Setter Property="Cursor" Value="{x:Static local:ChessCursors.BlackCursor}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
 </Window>

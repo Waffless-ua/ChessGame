@@ -34,6 +34,7 @@ namespace ChessGame.ViewModel
                 NotifyPropertyChanged();
             }
         }
+
         private IGameState GameState { get; }
 
         private INetworkService _networkService;
