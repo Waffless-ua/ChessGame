@@ -41,7 +41,19 @@ namespace ChessGame.ViewModel.Game
                 _currentlyHighlighted.Add(pos);
             }
         }
+        public void ShowCheck(Position kingPos)
+        {
+            if (kingPos == null)
+                return;
 
+            Color color = Color.FromArgb(180, 255, 80, 80);
+            Brush checkBrush = new SolidColorBrush(color);
+
+            int index = kingPos.Row * 8 + kingPos.Column;
+            HighlightCells[index].Brush = checkBrush;
+
+            _currentlyHighlighted.Add(kingPos);
+        }
         public void HideHighlights()
         {
             foreach (Position pos in _currentlyHighlighted)

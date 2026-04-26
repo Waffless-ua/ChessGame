@@ -56,7 +56,13 @@ namespace ChessGame.ViewModel
                 SelectedPos = null;
                 HighlightsViewModel.HideHighlights();
 
-                CellsViewModel.DrawBoard(_gameService.GetBoard());
+                var board = _gameService.GetBoard();
+
+                CellsViewModel.DrawBoard(board);
+
+                HighlightsViewModel.ShowCheck(
+                    _gameService.GetKingInCheck()
+                );
             });
         }
 
@@ -98,12 +104,15 @@ namespace ChessGame.ViewModel
             {
                 OnToPositionSelected(pos);
             }
+
+            HighlightsViewModel.ShowCheck(
+                _gameService.GetKingInCheck()
+            );
         }
 
         private void OnFromPositionSelected(Position pos)
         {
             var moves = _gameService.GetLegalMoves(pos);
-
             if (!moves.Any())
                 return;
 

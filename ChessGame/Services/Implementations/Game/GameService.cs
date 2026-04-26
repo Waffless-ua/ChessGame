@@ -39,6 +39,23 @@ namespace ChessGame.Services
             return _state.Board;
         }
 
+        public Position GetKingInCheck()
+        {
+            var board = _state.Board;
+
+            if (board.IsInCheck(Player.White))
+            {
+                return board.FindKing(Player.White);
+            }
+
+            if (board.IsInCheck(Player.Black))
+            {
+                return board.FindKing(Player.Black);
+            }
+
+            return null;
+        }
+
         public IEnumerable<Move> GetLegalMoves(Position pos)
         {
             if (_state.Board.IsEmpty(pos))
@@ -49,7 +66,9 @@ namespace ChessGame.Services
             if (piece.Color != _state.CurrentPlayer)
                 return Enumerable.Empty<Move>();
 
-            return piece.GetMoves(pos, _state.Board);
+            IEnumerable<Move> moveCandidates = piece.GetMoves(pos, _state.Board);
+
+            return moveCandidates.Where(move => move.IsLegal(_state.Board));
         }
 
         public void MakeMove(Move move, bool sendToOpponent = false)
