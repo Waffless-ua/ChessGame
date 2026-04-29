@@ -24,6 +24,8 @@ namespace ChessGame.Model.Moves
             _pieceMoved = board[FromPos];
             _pieceCaptured = board[ToPos];
 
+            _pieceMoved.HasMoved = true;
+
             board[ToPos] = _pieceMoved;
             board[FromPos] = null;
         }

@@ -31,12 +31,13 @@ namespace ChessGame.Services
         }
         public bool IsMoveLegal(Board board, Move move)
         {
-            var piece = board[move.FromPos];
+            Board copy = board.Copy();
 
-            move.Execute(board);
-            bool isCheck = IsInCheck(board, piece.Color);
+            var piece = copy[move.FromPos];
 
-            move.Undo(board);
+            move.Execute(copy);
+
+            bool isCheck = IsInCheck(copy, piece.Color);
 
             return !isCheck;
         }
