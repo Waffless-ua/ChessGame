@@ -4,6 +4,7 @@ using ChessGame.Model.DTO.Messages;
 using ChessGame.Model.Moves;
 using ChessGame.Services;
 using ChessGame.Services.Implementations;
+using ChessGame.Services.Implementations.Game;
 using ChessGame.Services.Implementations.Utils;
 using ChessGame.Services.Interfaces;
 using ChessGame.Services.Interfaces.Utils;
@@ -34,6 +35,7 @@ namespace ChessGame
             services.AddSingleton<ILobbyService, LobbyService>();
             services.AddSingleton<IGameService, GameService>();
             services.AddSingleton<IChessRulesService, ChessRulesService>();
+            services.AddSingleton<IGameHistoryService, GameHistoryService>();
 
             services.AddTransient<IMessageHandler<DtoMove>, MoveHandler>();
             services.AddTransient<IMessageHandler<DtoStartGame>, StartGameHandler>();

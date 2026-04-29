@@ -13,5 +13,7 @@ namespace ChessGame.Model
         Board Board { get; }
 
         void Initialize(Player thisPlayer, Board board);
+        GameStateMemento SaveState();
+        void RestoreState(GameStateMemento memento);
     }
 }
