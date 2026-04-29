@@ -19,12 +19,14 @@
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
 
             <Button Grid.Row="1" Style="{StaticResource ButtonStyle}" Margin="0,10" Command="{Binding CreateGameCommand}">Створити гру</Button>
             <Button Grid.Row="2" Style="{StaticResource ButtonStyle}" Margin="0,10" Command="{Binding SearchGameCommand}">Знайти гру</Button>
-            <Button Grid.Row="3" Style="{StaticResource ButtonStyle}" Margin="0,10" Command="{Binding ExitCommand}">Вийти</Button>
+            <Button Grid.Row="3" Style="{StaticResource ButtonStyle}" Margin="0,10" Command="{Binding SettingsCommand}">Налаштування</Button>
+            <Button Grid.Row="4" Style="{StaticResource ButtonStyle}" Margin="0,10" Command="{Binding ExitCommand}">Вийти</Button>
         </Grid>
     </Grid>
 </UserControl>

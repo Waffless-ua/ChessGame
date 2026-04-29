@@ -10,7 +10,8 @@
         
         mc:Ignorable="d"
         Title="ChessGame" Icon="/Assets/icon.ico"
-        MinWidth="640" MinHeight="480">
+        MinWidth="640" MinHeight="480"
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewmodels:MenuViewModel}">
@@ -27,6 +28,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:EndResultViewModel}">
             <views:EndResultView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SettingsViewModel}">
+            <views:SettingsView />
         </DataTemplate>
     </Window.Resources>
 

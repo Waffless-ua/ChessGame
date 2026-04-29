@@ -27,6 +27,9 @@ namespace ChessGame
             services.AddSingleton<INavigationService, NavigationService>();
             services.AddSingleton<INetworkService, TcpNetworkService>();
 
+            services.AddSingleton<ISettingsService, SettingsService>();
+
+
             services.AddSingleton<IDtoResolver, DtoResolver>();
             services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
 
@@ -54,6 +57,7 @@ namespace ChessGame
             services.AddTransient<EndResultViewModel>();
             services.AddTransient<SearchGameViewModel>();
             services.AddTransient<LobbyViewModel>();
+            services.AddTransient<SettingsViewModel>();
 
             services.AddTransient<GameViewModel>();
 
@@ -64,7 +68,11 @@ namespace ChessGame
         {
             base.OnStartup(e);
 
+            var settingsService = ServiceProvider.GetRequiredService<ISettingsService>();
+            var settings = settingsService.Load();
+
             var mainWindow = new MainWindow();
+            ApplySettings(mainWindow, settings);
 
             var mainVM = ServiceProvider.GetRequiredService<MainViewModel>();
             mainWindow.DataContext = mainVM;
@@ -73,6 +81,24 @@ namespace ChessGame
 
             var nav = ServiceProvider.GetRequiredService<INavigationService>();
             nav.NavigateTo<MenuViewModel>();
+        }
+
+        private void ApplySettings(Window window, SettingsData settings)
+        {
+            if (settings.IsFullScreen)
+            {
+                window.WindowStyle = WindowStyle.None;
+                window.WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                window.WindowStyle = WindowStyle.SingleBorderWindow;
+                window.WindowState = WindowState.Normal;
+                window.Width = settings.Width;
+                window.Height = settings.Height;
+
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
         }
     }
 }

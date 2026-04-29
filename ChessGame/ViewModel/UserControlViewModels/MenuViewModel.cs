@@ -12,6 +12,7 @@ namespace ChessGame.ViewModel
 
         public ICommand CreateGameCommand { get; }
         public ICommand SearchGameCommand { get; }
+        public ICommand SettingsCommand { get; }
         public ICommand ExitCommand { get; }
 
         public MenuViewModel(INavigationService navigation)
@@ -20,6 +21,7 @@ namespace ChessGame.ViewModel
 
             CreateGameCommand = new RelayCommand(CreateGame);
             SearchGameCommand = new RelayCommand(SearchGame);
+            SettingsCommand = new RelayCommand(Settings);
             ExitCommand = new RelayCommand(Exit);
         }
 
@@ -38,6 +40,11 @@ namespace ChessGame.ViewModel
         public void SearchGame(object obj)
         {
             _navigation.NavigateTo<SearchGameViewModel>();
+        }
+
+        public void Settings(object obj)
+        {
+            _navigation.NavigateTo<SettingsViewModel>();
         }
 
         public void Exit(object obj)
