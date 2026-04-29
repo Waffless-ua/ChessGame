@@ -59,5 +59,41 @@ namespace ChessGame.Model
             return PiecePositionsFor(player)
                 .FirstOrDefault(pos => this[pos].Type == PieceType.King);
         }
+        public Board Copy()
+        {
+            Board copy = new Board();
+            for (int r = 0; r < 8; r++)
+            {
+                for (int c = 0; c < 8; c++)
+                {
+                    if (pieces[r, c] != null)
+                    {
+                        copy.pieces[r, c] = pieces[r, c].Copy();
+                    }
+                }
+            }
+            return copy;
+        }
+        public string GeneratePositionHash()
+        {
+            var sb = new StringBuilder();
+            for (int r = 0; r < 8; r++)
+            {
+                for (int c = 0; c < 8; c++)
+                {
+                    Piece p = pieces[r, c];
+                    if (p == null)
+                    {
+                        sb.Append('-');
+                    }
+                    else
+                    {
+                        sb.Append(p.Color == Player.White ? "W" : "B");
+                        sb.Append((int)p.Type);
+                    }
+                }
+            }
+            return sb.ToString();
+        }
     }
 }

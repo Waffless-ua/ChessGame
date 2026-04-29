@@ -1,4 +1,5 @@
 ﻿using ChessGame.Model;
+using System.Text.Json;
 
 namespace ChessGame.Services
 {
@@ -16,5 +17,20 @@ namespace ChessGame.Services
         }
 
         public bool IsInitialized => Board != null;
+
+        public GameStateMemento SaveState()
+        {
+            return new GameStateMemento
+            {
+                PositionHash = Board.GeneratePositionHash(),
+                SavedBoard = Board.Copy(),
+                CurrentPlayer = this.CurrentPlayer
+            };
+        }
+        public void RestoreState(GameStateMemento memento)
+        {
+            this.Board = memento.SavedBoard.Copy();
+            this.CurrentPlayer = memento.CurrentPlayer;
+        }
     }
 }
