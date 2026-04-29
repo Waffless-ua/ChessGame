@@ -1,5 +1,4 @@
 ﻿using ChessGame.Model;
-using ChessGame.Model.DTO;
 using ChessGame.Model.Moves;
 using ChessGame.Services.Interfaces;
 using System;

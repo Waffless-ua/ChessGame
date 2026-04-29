@@ -1,5 +1,6 @@
 ﻿using ChessGame.Model;
 using ChessGame.Model.Moves;
+using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Interfaces;
 
 namespace ChessGame.Services.Implementations

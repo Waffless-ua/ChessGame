@@ -1,5 +1,5 @@
 ﻿using ChessGame.Model;
-using ChessGame.Model.DTO.Messages;
+using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Interfaces;
 using System;
 using System.Collections.Generic;

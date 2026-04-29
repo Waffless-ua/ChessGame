@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChessGame.Model;
-using ChessGame.Model.DTO.Handlers;
-using ChessGame.Model.DTO.Messages;
+using ChessGame.Services.Abstractions;
 using ChessGame.Services.Interfaces;
 
 namespace ChessGame.Services.Implementations

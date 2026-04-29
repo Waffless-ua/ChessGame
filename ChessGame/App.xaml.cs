@@ -1,11 +1,12 @@
 ﻿using ChessGame.Model;
 using ChessGame.Model.Abstractions;
-using ChessGame.Model.DTO.Handlers;
-using ChessGame.Model.DTO.Messages;
 using ChessGame.Model.Moves;
 using ChessGame.Model.PromotionStrategies;
 using ChessGame.Model.Rules;
 using ChessGame.Services;
+using ChessGame.Services.Abstractions;
+using ChessGame.Services.DTO.Handlers;
+using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Implementations;
 using ChessGame.Services.Implementations.Game;
 using ChessGame.Services.Implementations.Network;

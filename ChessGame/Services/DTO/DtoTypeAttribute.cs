@@ -1,6 +1,6 @@
 ﻿
 
-namespace ChessGame.Model.DTO
+namespace ChessGame.Services.DTO
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class DtoTypeAttribute : Attribute

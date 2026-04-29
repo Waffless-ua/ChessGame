@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessGame.Model.DTO
+namespace ChessGame.Services.DTO
 {
     public class NetworkMessage
     {

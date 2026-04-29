@@ -1,5 +1,5 @@
 ﻿using ChessGame.Model.Enums;
-using ChessGame.Model.Interfaces;
+using ChessGame.Model.Abstractions;
 using ChessGame.Services.Interfaces;
 using System;
 using System.Collections.Generic;

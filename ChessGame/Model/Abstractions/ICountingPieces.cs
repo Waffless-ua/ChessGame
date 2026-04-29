@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessGame.Model.Interfaces
+namespace ChessGame.Model.Abstractions
 {
     public interface ICountingPieces
     {

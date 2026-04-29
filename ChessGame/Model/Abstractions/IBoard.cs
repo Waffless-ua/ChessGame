@@ -1,4 +1,4 @@
-﻿using ChessGame.Model.Interfaces;
+﻿using ChessGame.Model.Abstractions;
 
 namespace ChessGame.Model
 {

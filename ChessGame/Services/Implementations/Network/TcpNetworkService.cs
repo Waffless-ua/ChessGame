@@ -1,6 +1,6 @@
 ﻿using ChessGame.Model;
-using ChessGame.Model.DTO;
 using ChessGame.Model.Moves;
+using ChessGame.Services.DTO;
 using ChessGame.Services.Interfaces;
 using System.IO;
 using System.Net;

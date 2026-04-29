@@ -1,7 +1,7 @@
 ﻿using ChessGame.Model;
 using System.Text.Json;
 
-namespace ChessGame.Services
+namespace ChessGame.Model
 {
     public class GameState : IGameState
     {

@@ -1,4 +1,4 @@
-﻿namespace ChessGame.Model.DTO.Messages
+﻿namespace ChessGame.Services.DTO.Messages
 {
     [DtoType(DtoType.StartGame)]
     public class DtoStartGame : IDtoMessage

@@ -1,5 +1,5 @@
 ﻿using ChessGame.Model;
-using ChessGame.Model.DTO;
+using ChessGame.Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,9 +1,12 @@
-﻿using ChessGame.Model.Moves;
+﻿using ChessGame.Model.Abstractions;
+using ChessGame.Model.Moves;
+using ChessGame.Services.Abstractions;
+using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Interfaces;
 using System.Windows;
 
 
-namespace ChessGame.Model.DTO.Handlers
+namespace ChessGame.Services.DTO.Handlers
 {
     public class NormalMoveHandler : IMessageHandler<DtoNormalMove>
     {

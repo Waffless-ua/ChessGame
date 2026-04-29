@@ -1,8 +1,10 @@
-﻿using ChessGame.Model.DTO.Messages;
+﻿using ChessGame.Model.Abstractions;
+using ChessGame.Services.Abstractions;
+using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Interfaces;
 using ChessGame.ViewModel;
 
-namespace ChessGame.Model.DTO.Handlers
+namespace ChessGame.Services.DTO.Handlers
 {
     public class StartGameHandler : IMessageHandler<DtoStartGame>
     {

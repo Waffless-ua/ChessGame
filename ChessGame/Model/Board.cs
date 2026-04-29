@@ -1,5 +1,5 @@
 ﻿using ChessGame.Model.Abstractions;
-using ChessGame.Model.Interfaces;
+using ChessGame.Model.Abstractions;
 using ChessGame.Services;
 using System.Collections.Generic;
 using System.Linq;

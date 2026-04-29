@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessGame.Model.DTO.Handlers
+namespace ChessGame.Services.Abstractions
 {
     public interface IMessageHandler<T> where T : IDtoMessage
     {

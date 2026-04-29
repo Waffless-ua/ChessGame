@@ -1,9 +1,10 @@
-﻿using ChessGame.Model.DTO;
-using ChessGame.Model.DTO.Messages;
+﻿using ChessGame.Model;
+using ChessGame.Services.DTO;
+using ChessGame.Services.DTO.Messages;
 using System;
 using System.Text.Json.Serialization;
 
-namespace ChessGame.Model.Moves
+namespace ChessGame.Services.DTO.Messages
 {
     [DtoType(DtoType.NormalMove)]
     public class DtoNormalMove : IDtoMessage

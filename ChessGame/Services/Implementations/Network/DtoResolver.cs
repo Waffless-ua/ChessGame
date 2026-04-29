@@ -1,6 +1,5 @@
 ﻿using ChessGame.Model;
-using ChessGame.Model.DTO;
-using ChessGame.Model.DTO.Messages;
+using ChessGame.Services.DTO;
 using ChessGame.Services.Interfaces;
 using System.Reflection;
 using System.Text.Json;

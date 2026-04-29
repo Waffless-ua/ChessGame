@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ChessGame.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChessGame.Model.DTO.Messages
+namespace ChessGame.Services.DTO.Messages
 {
     [DtoType(DtoType.PromotionMove)]
     public class DtoPromotionMove : IDtoMessage
