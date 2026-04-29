@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame.Model
 {
-    public class CountingPieces : ICountringPieces
+    public class CountingPieces : ICountingPieces
     {
         private readonly Dictionary<PieceType, int> whiteCount = new Dictionary<PieceType, int>();
         private readonly Dictionary<PieceType, int> blackCount = new Dictionary<PieceType, int>();

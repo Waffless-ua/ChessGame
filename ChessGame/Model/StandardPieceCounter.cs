@@ -10,7 +10,7 @@ namespace ChessGame.Model
 {
     public class StandardPieceCounter : IPieceCounterStrategy
     {
-        public ICountringPieces Count(Board board)
+        public ICountingPieces Count(Board board)
         {
             var counter = new CountingPieces();
 

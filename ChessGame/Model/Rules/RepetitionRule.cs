@@ -17,7 +17,7 @@ namespace ChessGame.Model.Rules
             _rules = rules;
         }
 
-        public GameResult Check(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             if (IsDrawByRepetition(history))
             {

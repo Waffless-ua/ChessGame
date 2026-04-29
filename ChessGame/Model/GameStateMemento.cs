@@ -9,7 +9,7 @@ namespace ChessGame.Model
     public record GameStateMemento
     {
         public string PositionHash { get; init; }
-        public Board SavedBoard { get; init; }
+        public IBoard SavedBoard { get; init; }
         public Player CurrentPlayer { get; init; }
     }
 }

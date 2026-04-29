@@ -31,7 +31,7 @@ namespace ChessGame.ViewModel.Game
             }
         }
 
-        public void DrawBoard(Board board)
+        public void DrawBoard(IBoard board)
         {
             for (int r = 0; r < 8; r++)
             {

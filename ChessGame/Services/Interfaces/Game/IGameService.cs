@@ -15,7 +15,7 @@ namespace ChessGame.Services.Interfaces
         bool TryMakeMove(Move move);
         IEnumerable<Move> GetLegalMoves(Position pos);
         bool IsCurrentPlayer();
-        Board GetBoard();
+        IBoard GetBoard();
         Position GetKingInCheck();
     }
 }

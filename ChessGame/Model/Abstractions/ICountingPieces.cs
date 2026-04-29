@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessGame.Model.Interfaces
 {
-    public interface ICountringPieces
+    public interface ICountingPieces
     {
         int TotalCount { get; }
 

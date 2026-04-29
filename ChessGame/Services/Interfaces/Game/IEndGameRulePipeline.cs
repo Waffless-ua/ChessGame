@@ -9,6 +9,6 @@ namespace ChessGame.Services.Interfaces
 {
     public interface IEndGameRulePipeline
     {
-        public GameResult Evaluate(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history);
+        public GameResult Evaluate(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history);
     }
 }

@@ -32,13 +32,13 @@ namespace ChessGame
             }
         }
 
-        private IEnumerable<Position> MovePositions(Position from, Board board)
+        private IEnumerable<Position> MovePositions(Position from, IBoard board)
         {
             return PotentialToPositions(from).Where(pos => Board.IsInside(pos)
                 && (board.IsEmpty(pos) || board[pos].Color != Color));
         }
 
-        public override IEnumerable<Move> GetMoves(Position from, Board board)
+        public override IEnumerable<Move> GetMoves(Position from, IBoard board)
         {
             return MovePositions(from, board).Select(to => new NormalMove(from, to));
         }

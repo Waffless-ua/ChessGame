@@ -30,7 +30,7 @@ namespace ChessGame
             return copy;
         }
 
-        public IEnumerable<Position> MovePositions(Position from, Board board)
+        public IEnumerable<Position> MovePositions(Position from, IBoard board)
         {
             foreach (Direction dir in dirs)
             {
@@ -49,7 +49,7 @@ namespace ChessGame
             }
         }
 
-        public override IEnumerable<Move> GetMoves(Position from, Board board)
+        public override IEnumerable<Move> GetMoves(Position from, IBoard board)
         {
             foreach (Position to in MovePositions(from, board))
             {
@@ -57,7 +57,7 @@ namespace ChessGame
             }
         }
 
-        public override bool CanCaptureOpponentKing(Position from, Board board)
+        public override bool CanCaptureOpponentKing(Position from, IBoard board)
         {
             return MovePositions(from, board).Any(to =>
             {

@@ -10,9 +10,9 @@ namespace ChessGame.Model
     {
         Player ThisPlayer { get; }
         Player CurrentPlayer { get; set; }
-        Board Board { get; }
+        IBoard Board { get; }
 
-        void Initialize(Player thisPlayer, Board board);
+        void Initialize(Player thisPlayer, IBoard board);
         GameStateMemento SaveState();
         void RestoreState(GameStateMemento memento);
     }

@@ -18,7 +18,7 @@ namespace ChessGame.Model.Rules
             _rules = rules;
         }
 
-        public GameResult Check(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             if (IsDrawByInsufficientMaterial(board, history))
             {
@@ -28,9 +28,9 @@ namespace ChessGame.Model.Rules
             return null;
         }
 
-        private bool IsDrawByInsufficientMaterial(Board board, IEnumerable<GameStateMemento> history)
+        private bool IsDrawByInsufficientMaterial(IBoard board, IEnumerable<GameStateMemento> history)
         {
-            ICountringPieces countringPieces = board.CountPieces();
+            ICountingPieces countringPieces = board.CountPieces();
 
             if (IsKingVsKing(countringPieces))
             {
@@ -55,26 +55,26 @@ namespace ChessGame.Model.Rules
             return false;
         }
 
-        private static bool IsKingVsKing(ICountringPieces countringPieces)
+        private static bool IsKingVsKing(ICountingPieces countringPieces)
         {
             return countringPieces.TotalCount == 2;
         }
 
-        private static bool IsKingBishopVsKing(ICountringPieces countringPieces)
+        private static bool IsKingBishopVsKing(ICountingPieces countringPieces)
         {
             return countringPieces.TotalCount == 3 && (
                 countringPieces.GetWhitePieces(PieceType.Bishop) == 1 ||
                 countringPieces.GetBlackPieces(PieceType.Bishop) == 1);
         }
 
-        private static bool IsKingKnightVsKing(ICountringPieces countringPieces)
+        private static bool IsKingKnightVsKing(ICountingPieces countringPieces)
         {
             return countringPieces.TotalCount == 3 && (
                 countringPieces.GetWhitePieces(PieceType.Knight) == 1 ||
                 countringPieces.GetBlackPieces(PieceType.Knight) == 1);
         }
 
-        private static bool IsKingBishopVsKingBishop(Board board, ICountringPieces countringPieces)
+        private static bool IsKingBishopVsKingBishop(IBoard board, ICountingPieces countringPieces)
         {
             if (countringPieces.TotalCount != 4)
             {
@@ -92,7 +92,7 @@ namespace ChessGame.Model.Rules
             return wBishopPos.SquareColor() == bBishopPos.SquareColor();
         }
 
-        private static Position FindPiece(Board board, Player color, PieceType type)
+        private static Position FindPiece(IBoard board, Player color, PieceType type)
         {
             return board.PiecePositionsFor(color).First(pos => board[pos].Type == type);
         }

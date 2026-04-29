@@ -17,7 +17,7 @@ namespace ChessGame.Model.Rules
             _rules = rules;
         }
 
-        public GameResult Check(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             if (IsStalemate(board, nextPlayer))
             {
@@ -27,7 +27,7 @@ namespace ChessGame.Model.Rules
             return null;
         }
 
-        private bool IsStalemate(Board board, Player player)
+        private bool IsStalemate(IBoard board, Player player)
         {
             if (_rules.IsInCheck(board, player)) return false;
 

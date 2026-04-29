@@ -9,10 +9,10 @@ namespace ChessGame.Services.Interfaces
 {
     public interface IChessRulesService
     {
-        IEnumerable<Move> GetLegalMoves(Board board, Player player, Position pos);
-        public bool HasAnyLegalMoves(Board board, Player player);
-        bool IsMoveLegal(Board board, Move move);
-        Position GetKingInCheck(Board board);
-        bool IsInCheck(Board board, Player player);
+        IEnumerable<Move> GetLegalMoves(IBoard board, Player player, Position pos);
+        public bool HasAnyLegalMoves(IBoard board, Player player);
+        bool IsMoveLegal(IBoard board, Move move);
+        Position GetKingInCheck(IBoard board);
+        bool IsInCheck(IBoard board, Player player);
     }
 }

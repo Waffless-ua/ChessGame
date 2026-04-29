@@ -19,7 +19,7 @@ namespace ChessGame.Model.Moves
             FromPos = fromPos;
             ToPos = toPos;
         }
-        public override void Execute(Board board)
+        public override void Execute(IBoard board)
         {
             _pieceMoved = board[FromPos];
             _pieceCaptured = board[ToPos];
@@ -30,7 +30,7 @@ namespace ChessGame.Model.Moves
             board[FromPos] = null;
         }
 
-        public override void Undo(Board board)
+        public override void Undo(IBoard board)
         {
             board[FromPos] = _pieceMoved;
             board[ToPos] = _pieceCaptured;

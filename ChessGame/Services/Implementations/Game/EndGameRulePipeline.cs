@@ -17,7 +17,7 @@ namespace ChessGame.Services.Implementations.Game
             _rules = rules;
         }
 
-        public GameResult Evaluate(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult Evaluate(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             foreach (var rule in _rules)
             {

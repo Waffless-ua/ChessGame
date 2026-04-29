@@ -7,9 +7,9 @@ namespace ChessGame.Services
     {
         public Player ThisPlayer { get; private set; }
         public Player CurrentPlayer { get; set; }
-        public Board Board { get; private set; }
+        public IBoard Board { get; private set; }
 
-        public void Initialize(Player player, Board board)
+        public void Initialize(Player player, IBoard board)
         {
             ThisPlayer = player;
             CurrentPlayer = Player.White;

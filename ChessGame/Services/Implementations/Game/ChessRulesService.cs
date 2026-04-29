@@ -8,7 +8,7 @@ namespace ChessGame.Services
 {
     public class ChessRulesService : IChessRulesService
     {
-        public IEnumerable<Move> GetLegalMoves(Board board, Player player, Position pos)
+        public IEnumerable<Move> GetLegalMoves(IBoard board, Player player, Position pos)
         {
             if (board.IsEmpty(pos)) return Enumerable.Empty<Move>();
 
@@ -18,7 +18,7 @@ namespace ChessGame.Services
             var candidates = piece.GetMoves(pos, board);
             return candidates.Where(m => IsMoveLegal(board, m));
         }
-        public bool HasAnyLegalMoves(Board board, Player player)
+        public bool HasAnyLegalMoves(IBoard board, Player player)
         {
             foreach (var pos in board.PiecePositionsFor(player))
             {
@@ -29,9 +29,9 @@ namespace ChessGame.Services
             }
             return false;
         }
-        public bool IsMoveLegal(Board board, Move move)
+        public bool IsMoveLegal(IBoard board, Move move)
         {
-            Board copy = board.Copy();
+            IBoard copy = board.Copy();
 
             var piece = copy[move.FromPos];
 
@@ -42,7 +42,7 @@ namespace ChessGame.Services
             return !isCheck;
         }
 
-        public bool IsInCheck(Board board, Player player)
+        public bool IsInCheck(IBoard board, Player player)
         {
             var kingPos = board.FindKing(player);
             if (kingPos == null) return false;
@@ -61,7 +61,7 @@ namespace ChessGame.Services
             return false;
         }
 
-        public Position GetKingInCheck(Board board)
+        public Position GetKingInCheck(IBoard board)
         {
             if (IsInCheck(board, Player.White)) return board.FindKing(Player.White);
             if (IsInCheck(board, Player.Black)) return board.FindKing(Player.Black);

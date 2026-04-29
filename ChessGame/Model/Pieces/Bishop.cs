@@ -28,7 +28,7 @@ namespace ChessGame
             return copy;
         }
 
-        public override IEnumerable<Move> GetMoves(Position from, Board board)
+        public override IEnumerable<Move> GetMoves(Position from, IBoard board)
         {
             return MovePositionInDirs(from, board, dirs).Select(to => new NormalMove(from, to));
         }

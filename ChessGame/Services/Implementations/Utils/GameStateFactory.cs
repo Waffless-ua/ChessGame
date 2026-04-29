@@ -20,7 +20,7 @@ namespace ChessGame.Services.Implementations.Utils
 
         public IGameState Create(Player player)
         {
-            var board = _boardFactory.CreateInitial();
+            IBoard board = _boardFactory.CreateInitial();
 
             var state = new GameState();
             state.Initialize(player, board);

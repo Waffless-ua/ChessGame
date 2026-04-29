@@ -9,9 +9,9 @@ namespace ChessGame.Services.Implementations
 {
     public class BoardFactory : IBoardFactory
     {
-        public Board CreateInitial()
+        public IBoard CreateInitial()
         {
-            var board = new Board();
+            IBoard board = new Board();
 
             PlaceBackRank(board, 0, Player.Black);
             PlaceBackRank(board, 7, Player.White);
@@ -25,7 +25,7 @@ namespace ChessGame.Services.Implementations
             return board;
         }
 
-        private void PlaceBackRank(Board board, int row, Player player)
+        private void PlaceBackRank(IBoard board, int row, Player player)
         {
             board[row, 0] = new Rook(player);
             board[row, 1] = new Knight(player);

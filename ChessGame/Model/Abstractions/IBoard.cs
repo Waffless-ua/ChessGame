@@ -1,21 +1,18 @@
 ﻿using ChessGame.Model.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame.Model
 {
     public interface IBoard
     {
-        public bool IsEmpty(Position pos);
-        public IEnumerable<Position> PiecePositions();
+        Piece this[int row, int col] { get; set; }
+        Piece this[Position pos] { get; set; }
 
-        public IEnumerable<Position> PiecePositionsFor(Player player);
-        public Position FindKing(Player player);
-        public Board Copy();
-        public string GeneratePositionHash();
-        public ICountringPieces CountPieces();
+        bool IsEmpty(Position pos);
+        IEnumerable<Position> PiecePositions();
+        IEnumerable<Position> PiecePositionsFor(Player player);
+        Position FindKing(Player player);
+        IBoard Copy();
+        string GeneratePositionHash();
+        ICountingPieces CountPieces();
     }
 }

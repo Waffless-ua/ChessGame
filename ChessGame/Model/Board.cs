@@ -1,34 +1,31 @@
 ﻿using ChessGame.Model.Abstractions;
 using ChessGame.Model.Interfaces;
 using ChessGame.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChessGame.Model
 {
     public class Board : IBoard
     {
-        private readonly Piece[,] pieces = new Piece[8,8];
+        private readonly Piece[,] pieces = new Piece[8, 8];
         private readonly IPieceCounterStrategy _pieceCounter;
+
         public Board(IPieceCounterStrategy pieceCounter = null)
         {
             _pieceCounter = pieceCounter ?? new StandardPieceCounter();
         }
-
         public Piece this[int row, int col]
         {
             get { return pieces[row, col]; }
-            internal set { pieces[row, col] = value; }
+            set { pieces[row, col] = value; }
         }
 
         public Piece this[Position pos]
         {
             get { return pieces[pos.Row, pos.Column]; }
-            internal set { pieces[pos.Row, pos.Column] = value; }
+            set { pieces[pos.Row, pos.Column] = value; }
         }
 
         public static bool IsInside(Position pos)
@@ -48,7 +45,6 @@ namespace ChessGame.Model
                 for (int c = 0; c < 8; c++)
                 {
                     Position pos = new Position(r, c);
-
                     if (!IsEmpty(pos))
                     {
                         yield return pos;
@@ -67,9 +63,10 @@ namespace ChessGame.Model
             return PiecePositionsFor(player)
                 .FirstOrDefault(pos => this[pos].Type == PieceType.King);
         }
-        public Board Copy()
+
+        public IBoard Copy()
         {
-            Board copy = new Board();
+            Board copy = new Board(_pieceCounter);
             for (int r = 0; r < 8; r++)
             {
                 for (int c = 0; c < 8; c++)
@@ -82,6 +79,7 @@ namespace ChessGame.Model
             }
             return copy;
         }
+
         public string GeneratePositionHash()
         {
             var sb = new StringBuilder();
@@ -103,7 +101,8 @@ namespace ChessGame.Model
             }
             return sb.ToString();
         }
-        public ICountringPieces CountPieces()
+
+        public ICountingPieces CountPieces()
         {
             return _pieceCounter.Count(this);
         }

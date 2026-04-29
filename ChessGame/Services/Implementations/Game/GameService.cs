@@ -43,7 +43,7 @@ namespace ChessGame.Services
             return _state.ThisPlayer == _state.CurrentPlayer;
         }
 
-        public Board GetBoard()
+        public IBoard GetBoard()
         {
             return _state.Board;
         }

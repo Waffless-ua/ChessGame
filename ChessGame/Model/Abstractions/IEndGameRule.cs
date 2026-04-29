@@ -8,6 +8,6 @@ namespace ChessGame.Model
 {
     public interface IEndGameRule
     {
-        GameResult Check(Board board, Player nextPlayer, IEnumerable<GameStateMemento> history);
+        GameResult Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history);
     }
 }

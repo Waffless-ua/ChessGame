@@ -9,6 +9,6 @@ namespace ChessGame.Model.Abstractions
 {
     public interface IPieceCounterStrategy
     {
-        ICountringPieces Count(Board board);
+        ICountingPieces Count(Board board);
     }
 }

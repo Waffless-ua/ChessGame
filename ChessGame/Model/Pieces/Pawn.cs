@@ -31,12 +31,12 @@ namespace ChessGame
             return copy;
         }
 
-        private static bool CanMoveTo(Position pos, Board board)
+        private static bool CanMoveTo(Position pos, IBoard board)
         {
             return Board.IsInside(pos) && board.IsEmpty(pos);
         }
 
-        private bool CanCapture(Position pos, Board board)
+        private bool CanCapture(Position pos, IBoard board)
         {
             if (!Board.IsInside(pos) || board.IsEmpty(pos))
             {
@@ -46,7 +46,7 @@ namespace ChessGame
             return board[pos].Color != Color;
         }
 
-        private IEnumerable<Move> ForwardMoves(Position from, Board board)
+        private IEnumerable<Move> ForwardMoves(Position from, IBoard board)
         {
             Position oneMovePos = from + forward;
 
@@ -64,7 +64,7 @@ namespace ChessGame
         }
 
 
-        private IEnumerable<Move> DiagonalMoves(Position from, Board board)
+        private IEnumerable<Move> DiagonalMoves(Position from, IBoard board)
         {
             foreach(Direction dir in new Direction[] { Direction.West, Direction.East })
             {
@@ -77,12 +77,12 @@ namespace ChessGame
             }
         }
 
-        public override IEnumerable<Move> GetMoves(Position from, Board board)
+        public override IEnumerable<Move> GetMoves(Position from, IBoard board)
         {
             return ForwardMoves(from, board).Concat(DiagonalMoves(from, board));
         }
 
-        public override bool CanCaptureOpponentKing(Position from, Board board)
+        public override bool CanCaptureOpponentKing(Position from, IBoard board)
         {
             return DiagonalMoves(from, board).Any(move =>
             {
