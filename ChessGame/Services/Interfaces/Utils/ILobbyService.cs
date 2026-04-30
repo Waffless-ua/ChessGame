@@ -1,13 +1,14 @@
-﻿using System;
+﻿using ChessGame.Model;
+using ChessGame.Model.Data;
+using System;
 using System.Threading.Tasks;
-using ChessGame.Model;
 
 namespace ChessGame.Services.Interfaces
 {
     public interface ILobbyService
     {
         event Action<bool> IsConnected;
-        Task InitializeAsync(bool isHost, string ip = null);
+        Task<bool> InitializeAsync(LobbyParams lobbyParams);
         Task StartGameAsync();
     }
 }

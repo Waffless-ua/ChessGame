@@ -65,7 +65,7 @@ namespace ChessGame.ViewModel
         {
             IsHost = lobbyParams.IsHost;
 
-            await _lobbyService.InitializeAsync(lobbyParams.IsHost, lobbyParams.IpAdress);
+            await _lobbyService.InitializeAsync(lobbyParams);
         }
 
         private async Task StartGameAsync()

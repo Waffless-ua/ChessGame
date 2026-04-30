@@ -15,16 +15,14 @@ namespace ChessGame.Services.Implementations
         private readonly IDtoResolver _resolver;
         private readonly IMessageDispatcher _dispatcher;
 
-        private TcpListener tcpListener;
-        private TcpClient tcpClient;
+        private TcpListener _listener;
+        private TcpClient _client;
 
-        private StreamReader reader;
-        private StreamWriter writer;
+        private StreamReader _reader;
+        private StreamWriter _writer;
 
         private CancellationTokenSource _cts;
-
         private Task _listenTask;
-        private bool _isListening;
 
         public TcpNetworkService(IDtoResolver resolver, IMessageDispatcher dispatcher)
         {
@@ -33,49 +31,101 @@ namespace ChessGame.Services.Implementations
         }
 
 
-        public async Task StartServerAsync(int port)
+        public async Task<bool> StartServerAsync(int port)
         {
             try
             {
-                tcpListener?.Stop();
+                _listener?.Stop();
 
-                tcpListener = new TcpListener(IPAddress.Any, port);
-                tcpListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                _listener = new TcpListener(IPAddress.Any, port);
+                _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-                tcpListener.Start();
+                _listener.Start();
 
-                tcpClient = await tcpListener.AcceptTcpClientAsync();
+                _client = await _listener.AcceptTcpClientAsync();
+
                 InitStreams();
+
+                if (!await HandshakeAsync(isServer: true))
+                    return false;
+
                 StartListening();
+                return true;
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine($"[SERVER START ERROR]: {ex.Message}");
-                throw;
+                return false;
             }
         }
 
-        public async Task ConnectAsync(string ip, int port)
-        {
-            tcpClient = new TcpClient();
-            await tcpClient.ConnectAsync(ip, port);
 
-            InitStreams();
-            StartListening();
+        public async Task<bool> ConnectAsync(string ip, int port)
+        {
+            try
+            {
+                _client = new TcpClient();
+
+                var connectTask = _client.ConnectAsync(ip, port);
+                var timeoutTask = Task.Delay(5000);
+
+                var completed = await Task.WhenAny(connectTask, timeoutTask);
+
+                if (completed == timeoutTask)
+                    return false;
+
+                InitStreams();
+
+                if (!await HandshakeAsync(isServer: false))
+                    return false;
+
+                StartListening();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
+
+
+        private async Task<bool> HandshakeAsync(bool isServer)
+        {
+            try
+            {
+                if (isServer)
+                {
+                    await SendRawAsync("HELLO_SERVER");
+                    var response = await _reader.ReadLineAsync();
+
+                    return response == "HELLO_CLIENT";
+                }
+                else
+                {
+                    var request = await _reader.ReadLineAsync();
+
+                    if (request != "HELLO_SERVER")
+                        return false;
+
+                    await SendRawAsync("HELLO_CLIENT");
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         private void InitStreams()
         {
-            var stream = tcpClient.GetStream();
-            reader = new StreamReader(stream);
-            writer = new StreamWriter(stream) { AutoFlush = true };
+            var stream = _client.GetStream();
+            _reader = new StreamReader(stream);
+            _writer = new StreamWriter(stream) { AutoFlush = true };
         }
 
         private void StartListening()
         {
-            if (_isListening) return;
-
-            _isListening = true;
             _cts = new CancellationTokenSource();
 
             _listenTask = Task.Run(async () =>
@@ -84,7 +134,7 @@ namespace ChessGame.Services.Implementations
                 {
                     while (!_cts.IsCancellationRequested)
                     {
-                        var raw = await reader.ReadLineAsync();
+                        var raw = await _reader.ReadLineAsync();
                         if (raw == null) break;
 
                         var msg = JsonSerializer.Deserialize<NetworkMessage>(raw);
@@ -94,43 +144,33 @@ namespace ChessGame.Services.Implementations
                         await _dispatcher.DispatchAsync(dto);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[Network Error] {ex}");
-                }
-                finally
-                {
-                    _isListening = false;
-                }
+                catch { }
             });
         }
+
+
         public async Task SendAsync(DtoType type, IDtoMessage message)
         {
-            if (writer == null)
+            if (_writer == null) return;
+
+            var payload = JsonSerializer.Serialize(message, message.GetType());
+
+            var envelope = new NetworkMessage
             {
-                return;
-            }
+                DtoType = type,
+                Payload = payload
+            };
 
-            try
-            {
-                var payload = JsonSerializer.Serialize(message, message.GetType());
+            var json = JsonSerializer.Serialize(envelope);
 
-                var envelope = new NetworkMessage
-                {
-                    DtoType = type,
-                    Payload = payload
-                };
-
-                var json = JsonSerializer.Serialize(envelope);
-
-                await writer.WriteLineAsync(json);
-                await writer.FlushAsync();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"[SEND ERROR]: {ex.Message}");
-            }
+            await _writer.WriteLineAsync(json);
         }
+
+        private async Task SendRawAsync(string msg)
+        {
+            await _writer.WriteLineAsync(msg);
+        }
+
 
         public async Task DisconnectAsync()
         {
@@ -138,17 +178,14 @@ namespace ChessGame.Services.Implementations
             {
                 _cts?.Cancel();
 
-                reader?.Dispose();
-                writer?.Dispose();
+                _reader?.Dispose();
+                _writer?.Dispose();
 
-                tcpClient?.Close();
-                tcpListener?.Stop();
+                _client?.Close();
+                _listener?.Stop();
 
                 if (_listenTask != null)
                     await _listenTask;
-
-                _cts = null;
-                _listenTask = null;
             }
             catch { }
         }

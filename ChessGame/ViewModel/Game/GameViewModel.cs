@@ -57,6 +57,27 @@ namespace ChessGame.ViewModel
             set { _turnStatus = value; NotifyPropertyChanged(); }
         }
 
+        private string _whiteTimeText = "00:00";
+        public string WhiteTimeText
+        {
+            get => _whiteTimeText;
+            set
+            {
+                _whiteTimeText = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private string _blackTimeText = "00:00";
+        public string BlackTimeText
+        {
+            get => _blackTimeText;
+            set
+            {
+                _blackTimeText = value;
+                NotifyPropertyChanged();
+            }
+        }
         public ICommand LeaveGameCommand { get; }
         public ICommand CellClickCommand { get; }
         public GameViewModel(IGameService gameService, INetworkService networkService, 

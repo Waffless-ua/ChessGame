@@ -1,10 +1,8 @@
 ﻿using ChessGame.Model;
+using ChessGame.Model.Data;
 using ChessGame.Services.DTO.Messages;
 using ChessGame.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ChessGame.Services.Implementations
@@ -15,25 +13,36 @@ namespace ChessGame.Services.Implementations
         private readonly IGameService _gameService;
 
         public event Action<bool> IsConnected;
-        private int _port = 55555;
+
+        private const int _port = 55555;
+
         public LobbyService(INetworkService networkService, IGameService gameService)
         {
             _networkService = networkService;
             _gameService = gameService;
         }
 
-        public async Task InitializeAsync(bool isHost, string ip = null)
+        public async Task<bool> InitializeAsync(LobbyParams lobbyParams)
         {
+            bool success;
+            bool isHost = lobbyParams.IsHost;
+            string ip = lobbyParams.IpAdress;
+
             if (isHost)
             {
-                await _networkService.StartServerAsync(_port);
+                success = await _networkService.StartServerAsync(_port);
             }
             else
             {
-                await _networkService.ConnectAsync(ip, _port);
+                if (string.IsNullOrWhiteSpace(ip))
+                    return false;
+
+                success = await _networkService.ConnectAsync(ip, _port);
             }
 
-            IsConnected?.Invoke(true);
+            IsConnected?.Invoke(success);
+
+            return success;
         }
 
         public async Task StartGameAsync()

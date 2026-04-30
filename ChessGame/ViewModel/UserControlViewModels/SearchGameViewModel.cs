@@ -1,9 +1,9 @@
 ﻿using ChessGame.Commands;
 using ChessGame.Model;
 using ChessGame.Model.Data;
+using ChessGame.Services.Implementations;
 using ChessGame.Services.Interfaces;
 using ChessGame.Services.Interfaces.Factories;
-using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,6 +13,8 @@ namespace ChessGame.ViewModel
     {
         private readonly INavigationService _navigation;
         private readonly IViewModelFactory<LobbyParams> _lobbyFactory;
+        private readonly ILobbyService _lobbyService;
+
         private string _ipAddress = "127.0.0.1";
 
         public string IpAddress
@@ -28,17 +30,20 @@ namespace ChessGame.ViewModel
         public ICommand JoinCommand { get; }
         public ICommand MenuCommand { get; }
 
-        public SearchGameViewModel(INavigationService navigation,
-            IViewModelFactory<LobbyParams> lobbyFactory)
+        public SearchGameViewModel(
+            INavigationService navigation,
+            IViewModelFactory<LobbyParams> lobbyFactory,
+            ILobbyService lobbyService)
         {
             _navigation = navigation;
             _lobbyFactory = lobbyFactory;
+            _lobbyService = lobbyService;
 
-            JoinCommand = new RelayCommand(JoinGame);
+            JoinCommand = new AsyncRelayCommand(JoinGame);
             MenuCommand = new RelayCommand(ReturnToMenu);
         }
 
-        private void JoinGame(object parameter)
+        private async Task JoinGame()
         {
             if (string.IsNullOrWhiteSpace(IpAddress))
             {
@@ -47,6 +52,14 @@ namespace ChessGame.ViewModel
             }
 
             var param = new LobbyParams(isHost: false, IpAddress);
+
+            var connected = await _lobbyService.InitializeAsync(param);
+
+            if (!connected)
+            {
+                MessageBox.Show("Не вдалося підключитися до хоста.");
+                return;
+            }
 
             var lobbyVM = _lobbyFactory.CreateViewModelWithParams(param);
 
