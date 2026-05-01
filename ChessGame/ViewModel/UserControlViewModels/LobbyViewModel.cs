@@ -1,10 +1,14 @@
-﻿using ChessGame.Commands;
-using ChessGame.Model.Data;
-using ChessGame.Services.Implementations;
-using ChessGame.Services.Interfaces;
+﻿using ChessApplication.DTO;
+using ChessApplication.Interfaces.Utils;
+using ChessGame.Commands;
+using ChessGame.Utils;
+using ChessGame.ViewModel.Base;
+using ChessGame.ViewModel.Game;
+using ChessLibrary.Enums;
+using System.Windows;
 using System.Windows.Input;
 
-namespace ChessGame.ViewModel
+namespace ChessGame.ViewModel.UserControlViewModels
 {
     public class LobbyViewModel : BaseViewModel, IDisposable
     {
@@ -39,13 +43,22 @@ namespace ChessGame.ViewModel
             _navigation = navigation;
 
             _lobbyService.IsConnected += OnConnected;
+            _lobbyService.GameStarted += OnGameStarted;
 
             StartGameCommand = new AsyncRelayCommand(
                 StartGameAsync,
                 () => CanStartGame
             );
         }
-
+        private void OnGameStarted(Player player)
+        {
+            _lobbyService.Reset();
+            _navigation.NavigateTo<GameViewModel>();
+        }
+        private async Task StartGameAsync()
+        {
+            await _lobbyService.StartLanGameAsync(Player.White);
+        }
         private void OnConnected(bool isConnected)
         {
             IsOtherPlayerConnected = isConnected;
@@ -58,27 +71,22 @@ namespace ChessGame.ViewModel
         private void UpdateHeader()
         {
             HeaderText = IsHost
-                ? (IsOtherPlayerConnected ? "Суперник приєднався" : "Очікування суперника")
+                ? IsOtherPlayerConnected ? "Суперник приєднався" : "Очікування суперника"
                 : "Очікування початку гри";
         }
         public async Task ConfigureAsync(LobbyParams lobbyParams)
         {
             IsHost = lobbyParams.IsHost;
 
-            await _lobbyService.InitializeAsync(lobbyParams.IsHost, lobbyParams.IpAdress);
+            await _lobbyService.InitializeAsync(lobbyParams);
         }
-
-        private async Task StartGameAsync()
-        {
-            await _lobbyService.StartGameAsync();
-
-            _navigation.NavigateTo<GameViewModel>();
-        }
-
 
         public void Dispose()
         {
             _lobbyService.IsConnected -= OnConnected;
+            _lobbyService.GameStarted -= OnGameStarted;
+
+            _lobbyService.Reset();
         }
     }
 }

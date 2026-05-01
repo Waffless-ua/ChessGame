@@ -1,26 +1,13 @@
-﻿using ChessGame.Model;
-using ChessGame.Model.Abstractions;
-using ChessGame.Model.Data;
-using ChessGame.Model.Moves;
-using ChessGame.Model.MoveStrategies;
-using ChessGame.Model.Rules;
-using ChessGame.Services;
-using ChessGame.Services.Abstractions;
-using ChessGame.Services.DTO.Handlers;
-using ChessGame.Services.DTO.Messages;
-using ChessGame.Services.Implementations;
-using ChessGame.Services.Implementations.Factories;
-using ChessGame.Services.Implementations.Game;
-using ChessGame.Services.Implementations.Network;
-using ChessGame.Services.Implementations.Utils;
-using ChessGame.Services.Implementations.Utils.PieceFactories;
-using ChessGame.Services.Interfaces;
-using ChessGame.Services.Interfaces.Factories;
-using ChessGame.Services.Interfaces.Utils;
-using ChessGame.Services.Interfaces.Utils.PieceFactories;
+﻿using ChessApplication;
+using ChessApplication.DTO;
+using ChessApplication.Interfaces.Utils;
+using ChessGame.Utils;
 using ChessGame.ViewModel;
-using ChessGame.ViewModel.Game;
+using ChessGame.ViewModel.UserControlViewModels;
+using ChessInfrastructure;
+using ChessLibrary;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Windows;
 
 namespace ChessGame
@@ -33,67 +20,23 @@ namespace ChessGame
         {
             var services = new ServiceCollection();
 
-            services.AddSingleton<INavigationService, NavigationService>();
-            services.AddSingleton<INetworkService, TcpNetworkService>();
-            services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddChessDomain();
 
-            services.AddSingleton<IDtoResolver, DtoResolver>();
-            services.AddSingleton<IMessageDispatcher, MessageDispatcher>();
+            services.AddChessInfrastructure();
 
-            services.AddSingleton<IBoardFactory, BoardFactory>();
-            services.AddSingleton<IGameStateFactory, GameStateFactory>();
+            services.AddChessApplication();
 
-            services.AddSingleton<IMoveFactory, MoveFactory>();
-            services.AddSingleton<IPieceFactory, PieceFactory>();
+            services.AddChessPresentation();
 
-            services.AddTransient<ISubPieceFactory, PawnFactory>();
-            services.AddTransient<ISubPieceFactory, RookFactory>();
-            services.AddTransient<ISubPieceFactory, KnightFactory>();
-            services.AddTransient<ISubPieceFactory, BishopFactory>();
-            services.AddTransient<ISubPieceFactory, QueenFactory>();
-            services.AddTransient<ISubPieceFactory, KingFactory>();
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddDebug();
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
 
-            services.AddSingleton<IViewModelFactory<LobbyParams>, LobbyViewModelFactory>();
-            services.AddSingleton<IViewModelFactory<GameResult>, EndResultViewModelFactory>();
-
-            services.AddSingleton<IEndGameRulePipeline, EndGameRulePipeline>();
-
-            services.AddTransient<IEndGameRule, CheckmateRule>();
-            services.AddTransient<IEndGameRule, StalemateRule>();
-            services.AddTransient<IEndGameRule, RepetitionRule>();
-            services.AddTransient<IEndGameRule, InsufficientMaterial>();
-
-            services.AddSingleton<ILobbyService, LobbyService>();
-            services.AddSingleton<IGameService, GameService>();
-            services.AddSingleton<IChessRulesService, ChessRulesService>();
-            services.AddSingleton<IGameHistoryService, GameHistoryService>();
-
-            services.AddTransient<IMessageHandler<DtoStartGame>, StartGameHandler>();
-            services.AddTransient<IMessageHandler<DtoNormalMove>, NormalMoveHandler>();
-            services.AddTransient<IMessageHandler<DtoDoubleMove>, DoubleMoveHandler>();
-            services.AddTransient<IMessageHandler<DtoEnPassantMove>, DtoEnPassantMoveHandler>();
-            services.AddTransient<IMessageHandler<DtoPromotionMove>, PromotionMoveHandler>();
-
-            services.AddTransient<ISpecificDtoMoveFactory, DtoNormalMoveFactory>();
-            services.AddTransient<ISpecificDtoMoveFactory, DtoPromotionMoveFactory>();
-            services.AddTransient<ISpecificDtoMoveFactory, DtoDoubleMoveFactory>();
-            services.AddTransient<ISpecificDtoMoveFactory, DtoEnPasssantMoveFactory>();
-            services.AddTransient<IDtoMoveFactory, DtoMoveDispatcher>();
-
-            services.AddTransient<MainViewModel>();
-            services.AddTransient<MenuViewModel>();
-            services.AddTransient<EndResultViewModel>();
-            services.AddTransient<SearchGameViewModel>();
-            services.AddTransient<LobbyViewModel>();
-            services.AddTransient<SettingsViewModel>();
-            services.AddTransient<GameViewModel>();
-
-            //services.AddTransient<IMoveStrategy, BishopMoveStrategy>();
-            //services.AddTransient<IMoveStrategy, CompositeMoveStrategy>();
-            //services.AddTransient<IMoveStrategy, KnightMoveStrategy>();
-            //services.AddTransient<IMoveStrategy, PawnForwardStrategy>();
-            //services.AddTransient<IMoveStrategy, PawnCaptureStrategy>();
-            //services.AddTransient<IMoveStrategy, QueenMoveStrategy>();
+            services.AddSingleton<SynchronizationContext>(sp =>
+                    SynchronizationContext.Current ?? new System.Windows.Threading.DispatcherSynchronizationContext());
 
             ServiceProvider = services.BuildServiceProvider();
         }
@@ -108,16 +51,14 @@ namespace ChessGame
             var mainWindow = new MainWindow();
             ApplySettings(mainWindow, settings);
 
-            var mainVM = ServiceProvider.GetRequiredService<MainViewModel>();
-            mainWindow.DataContext = mainVM;
-
+            mainWindow.DataContext = ServiceProvider.GetRequiredService<MainViewModel>();
             mainWindow.Show();
 
-            var nav = ServiceProvider.GetRequiredService<INavigationService>();
-            nav.NavigateTo<MenuViewModel>();
+            ServiceProvider.GetRequiredService<INavigationService>()
+                           .NavigateTo<MenuViewModel>();
         }
 
-        private void ApplySettings(Window window, SettingsData settings)
+        private static void ApplySettings(Window window, SettingsData settings)
         {
             if (settings.IsFullScreen)
             {
