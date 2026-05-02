@@ -1,7 +1,7 @@
-﻿using ChessGame.Model;
-using ChessGame.Services;
-using ChessGame.Services.Interfaces;
-using System.ComponentModel;
+﻿using ChessApplication.Interfaces.Game;
+using ChessGame.Utils;
+using ChessGame.ViewModel.Base;
+using ChessLibrary.Enums;
 
 namespace ChessGame.ViewModel
 {
@@ -18,23 +18,20 @@ namespace ChessGame.ViewModel
             _gameService = gameService;
             _navigation = navigation;
 
-            _navigation.PropertyChanged += OnNavigationPropertyChanged;
+            _navigation.ViewChanged += OnViewChanged;
             _gameService.PlayerChanged += OnPlayerChanged;
         }
         private void OnPlayerChanged()
         {
             NotifyPropertyChanged(nameof(CurrentPlayerSide));
         }
-        private void OnNavigationPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        private void OnViewChanged()
         {
-            if (e.PropertyName == nameof(INavigationService.CurrentView))
-            {
-                NotifyPropertyChanged(nameof(CurrentView));
-            }
+            NotifyPropertyChanged(nameof(CurrentView));
         }
         public void Dispose()
         {
-            _navigation.PropertyChanged -= OnNavigationPropertyChanged;
+            _navigation.ViewChanged -= OnViewChanged;
             _gameService.PlayerChanged -= OnPlayerChanged;
         }
     }

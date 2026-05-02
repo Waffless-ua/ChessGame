@@ -1,38 +1,42 @@
-﻿using ChessGame.Commands;
-using ChessGame.Services.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ChessApplication.DTO;
+using ChessGame.Commands;
+using ChessGame.Factories.ViewModelsFactories;
+using ChessGame.Utils;
+using ChessGame.ViewModel.Base;
 using System.Windows;
 using System.Windows.Input;
 
-namespace ChessGame.ViewModel
+namespace ChessGame.ViewModel.UserControlViewModels
 {
     public class MenuViewModel : BaseViewModel
     {
         private readonly INavigationService _navigation;
+
+        private readonly IViewModelFactory<LobbyParams> _lobbyFactory;
 
         public ICommand CreateGameCommand { get; }
         public ICommand SearchGameCommand { get; }
         public ICommand SettingsCommand { get; }
         public ICommand ExitCommand { get; }
 
-        public MenuViewModel(INavigationService navigation)
+        public MenuViewModel(
+            INavigationService navigation,
+            IViewModelFactory<LobbyParams> lobbyFactory)
         {
             _navigation = navigation;
+            _lobbyFactory = lobbyFactory;
 
-            CreateGameCommand = new RelayCommand(CreateGame);
+            CreateGameCommand = new RelayCommand(CreateGameAsync);
             SearchGameCommand = new RelayCommand(SearchGame);
             SettingsCommand = new RelayCommand(Settings);
             ExitCommand = new RelayCommand(Exit);
         }
 
-        public void CreateGame(object obj)
+        private void CreateGameAsync(object obj)
         {
-            var app = (App)Application.Current;
-            var serviceProvider = app.ServiceProvider;
+            var param = new LobbyParams(isHost: true);
 
-            var lobbyVM = serviceProvider.GetRequiredService<LobbyViewModel>();
-
-            lobbyVM.ConfigureAsync(isHost: true);
+            var lobbyVM = _lobbyFactory.CreateViewModelWithParams(param);
 
             _navigation.NavigateTo(lobbyVM);
         }

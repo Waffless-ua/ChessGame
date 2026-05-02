@@ -4,70 +4,125 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ChessGame.View.UserControls"
-             xmlns:project="clr-namespace:ChessGame"
+             xmlns:vm="clr-namespace:ChessGame.ViewModel.Game" xmlns:project="clr-namespace:ChessGame"
              mc:Ignorable="d" 
              Width="600"
              Background="{StaticResource BackgroundColor}">
     <Viewbox>
-        <Grid x:Name="BoardGrid"
+        <Grid Background="{StaticResource BackgroundColor}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="BoardGrid"
               Width="600"
               Height="600"
               RenderTransformOrigin="0.5,0.5">
 
-            <Grid.Resources>
-                <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}"/>
-            </Grid.Resources>
+                <Grid.Resources>
+                    <FrameworkElement x:Key="ProxyElement" DataContext="{Binding}"/>
+                </Grid.Resources>
 
-            <Grid.RenderTransform>
-                <RotateTransform Angle="{Binding BoardRotation}" />
-            </Grid.RenderTransform>
+                <Grid.RenderTransform>
+                    <RotateTransform Angle="{Binding BoardRotation}" />
+                </Grid.RenderTransform>
 
-            <Grid.Background>
-                <ImageBrush ImageSource="/Assets/Board.png"/>
-            </Grid.Background>
-
-
-            <ItemsControl ItemsSource="{Binding HighlightsViewModel.HighlightCells}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Rectangle Fill="{Binding Brush}" Opacity="0.7"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                <Grid.Background>
+                    <ImageBrush ImageSource="/Assets/Board.png"/>
+                </Grid.Background>
 
 
-            <ItemsControl ItemsSource="{Binding CellsViewModel.BoardCells}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid x:Name="PieceGrid" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                <ItemsControl ItemsSource="{Binding HighlightsViewModel.HighlightCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid x:Name="HighlightGrid" Rows="8" Columns="8"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Rectangle Fill="{Binding Brush}" Opacity="0.7"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+
+                <ItemsControl ItemsSource="{Binding CellsViewModel.BoardCells}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid x:Name="PieceGrid" Rows="8" Columns="8" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.CellClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         CommandParameter="{Binding Position}"
                         Background="Transparent"
                         BorderThickness="0">
 
-                            <Image Source="{Binding ImagePath}" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
-                                <Image.RenderTransform>
-                                    <RotateTransform Angle="{Binding DataContext.BoardRotation, Source={StaticResource ProxyElement}}" />
-                                </Image.RenderTransform>
-                            </Image>
+                                <Image Source="{Binding ImagePath}" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
+                                    <Image.RenderTransform>
+                                        <RotateTransform Angle="{Binding DataContext.BoardRotation, Source={StaticResource ProxyElement}}" />
+                                    </Image.RenderTransform>
+                                </Image>
 
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-            <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}"/>
+                <ContentControl Visibility="Collapsed" Content="{StaticResource ProxyElement}"/>
+
+                <ContentControl Content="{Binding PromotionViewModel}" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            RenderTransformOrigin="0.5,0.5">
+                    <ContentControl.Resources>
+                        <DataTemplate DataType="{x:Type vm:PawnPromotionViewModel}">
+                            <local:PawnPromotionView />
+                        </DataTemplate>
+                    </ContentControl.Resources>
+                    <ContentControl.RenderTransform>
+                        <RotateTransform Angle="{Binding BoardRotation}" />
+                    </ContentControl.RenderTransform>
+                </ContentControl>
+            </Grid>
+
+            <StackPanel Grid.Column="1" Margin="20" VerticalAlignment="Center">
+                <Border Background="#33000000" CornerRadius="5" Padding="10" Margin="0,0,0,20">
+                    <TextBlock Text="{Binding TurnStatus}" 
+                       FontSize="20" FontWeight="Bold" 
+                       Foreground="White" HorizontalAlignment="Center"/>
+                </Border>
+
+                <GroupBox Header="Таймер" Foreground="White" Margin="0,0,0,20">
+                    <StackPanel Margin="5">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Білі:" Foreground="White"/>
+                            <TextBlock Text="{Binding WhiteTimeText}" FontWeight="Bold" Foreground="White" Margin="10,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,5,0,0">
+                            <TextBlock Text="Чорні:" Foreground="White"/>
+                            <TextBlock Text="{Binding BlackTimeText}" FontWeight="Bold" Foreground="White" Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <Button Command="{Binding LeaveGameCommand}" 
+                Content="Вийти в меню" 
+                Padding="10"
+                Background="#E74C3C" 
+                Foreground="White"
+                FontSize="16"
+                Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
         </Grid>
     </Viewbox>
 </UserControl>
