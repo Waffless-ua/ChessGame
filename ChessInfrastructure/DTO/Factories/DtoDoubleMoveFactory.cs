@@ -4,31 +4,33 @@ using ChessApplication.Interfaces.Game;
 using ChessApplication.Interfaces.Network;
 using ChessLibrary.Enums;
 using ChessLibrary.Moves;
+using ChessLibrary.ValueObjects;
 
 namespace ChessInfrastructure.DTO.Factories
 {
-    public class DtoDoubleMoveFactory : ISpecificDtoMoveFactory
+    /// <summary>
+    /// Фабрика для подвійного ходу пішака.
+    /// </summary>
+    public class DtoDoubleMoveFactory : BaseDtoMoveFactory<DtoDoubleMove>
     {
-        private readonly IGameService _gameService;
+        public override DtoType TargetDtoType => DtoType.DoubleMove;
+        public override MoveType TargetMoveType => MoveType.DoublePawn;
 
-        public DtoDoubleMoveFactory(IGameService gameService)
+        public DtoDoubleMoveFactory(IGameService gameService) : base(gameService)
         {
-            _gameService = gameService;
         }
 
-        public DtoType TargetDtoType => DtoType.DoubleMove;
-        public MoveType TargetMoveType => MoveType.DoublePawn;
+        protected override Position GetFromPosition(DtoDoubleMove dto) => dto.FromPos;
 
-        public Move GetMoveFromDTO(IDtoMessage message)
+        protected override Move? FindMove(IEnumerable<Move> legalMoves, DtoDoubleMove dto)
         {
-            var dto = (DtoDoubleMove)message;
-            var legalMoves = _gameService.GetLegalMoves(dto.FromPos);
-            var localMove = legalMoves.FirstOrDefault(m => m.ToPos == dto.ToPos && m.Type == MoveType.DoublePawn);
-
-            return localMove ?? throw new InvalidOperationException("Нелегальний double хід.");
+            return legalMoves.FirstOrDefault(m =>
+                m.ToPos == dto.ToPos && m.Type == TargetMoveType);
         }
 
-        public IDtoMessage GetMoveToDTO(Move move)
+        protected override string GetErrorMessage() => "Нелегальний подвійний хід пішака.";
+
+        public override IDtoMessage GetMoveToDTO(Move move)
         {
             return new DtoDoubleMove(move.FromPos, move.ToPos);
         }

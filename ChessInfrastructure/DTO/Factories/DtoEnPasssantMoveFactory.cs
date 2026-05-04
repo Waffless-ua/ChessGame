@@ -4,31 +4,33 @@ using ChessApplication.Interfaces.Game;
 using ChessApplication.Interfaces.Network;
 using ChessLibrary.Enums;
 using ChessLibrary.Moves;
+using ChessLibrary.ValueObjects;
 
 namespace ChessInfrastructure.DTO.Factories
 {
-    public class DtoEnPasssantMoveFactory : ISpecificDtoMoveFactory
+    /// <summary>
+    /// Фабрика для ходу "взяття на проході" (en passant).
+    /// </summary>
+    public class DtoEnPasssantMoveFactory : BaseDtoMoveFactory<DtoEnPassantMove>
     {
-        private readonly IGameService _gameService;
+        public override DtoType TargetDtoType => DtoType.EnPassant;
+        public override MoveType TargetMoveType => MoveType.EnPassant;
 
-        public DtoEnPasssantMoveFactory(IGameService gameService)
+        public DtoEnPasssantMoveFactory(IGameService gameService) : base(gameService)
         {
-            _gameService = gameService;
         }
 
-        public DtoType TargetDtoType => DtoType.EnPassant;
-        public MoveType TargetMoveType => MoveType.EnPassant;
+        protected override Position GetFromPosition(DtoEnPassantMove dto) => dto.FromPos;
 
-        public Move GetMoveFromDTO(IDtoMessage message)
+        protected override Move? FindMove(IEnumerable<Move> legalMoves, DtoEnPassantMove dto)
         {
-            var dto = (DtoEnPassantMove)message;
-            var legalMoves = _gameService.GetLegalMoves(dto.FromPos);
-            var localMove = legalMoves.FirstOrDefault(m => m.ToPos == dto.ToPos && m.Type == TargetMoveType);
-
-            return localMove ?? throw new InvalidOperationException("Нелегальний double хід.");
+            return legalMoves.FirstOrDefault(m =>
+                m.ToPos == dto.ToPos && m.Type == TargetMoveType);
         }
 
-        public IDtoMessage GetMoveToDTO(Move move)
+        protected override string GetErrorMessage() => "Нелегальний хід en passant.";
+
+        public override IDtoMessage GetMoveToDTO(Move move)
         {
             return new DtoEnPassantMove(move.FromPos, move.ToPos);
         }

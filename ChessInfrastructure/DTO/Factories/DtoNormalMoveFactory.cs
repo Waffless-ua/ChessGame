@@ -4,31 +4,33 @@ using ChessApplication.Interfaces.Game;
 using ChessApplication.Interfaces.Network;
 using ChessLibrary.Enums;
 using ChessLibrary.Moves;
+using ChessLibrary.ValueObjects;
 
 namespace ChessInfrastructure.DTO.Factories
 {
-    public class DtoNormalMoveFactory : ISpecificDtoMoveFactory
+    /// <summary>
+    /// Фабрика для звичайних ходів.
+    /// </summary>
+    public class DtoNormalMoveFactory : BaseDtoMoveFactory<DtoNormalMove>
     {
-        private readonly IGameService _gameService;
+        public override DtoType TargetDtoType => DtoType.NormalMove;
+        public override MoveType TargetMoveType => MoveType.NormalMove;
 
-        public DtoNormalMoveFactory(IGameService gameService)
+        public DtoNormalMoveFactory(IGameService gameService) : base(gameService)
         {
-            _gameService = gameService;
         }
 
-        public DtoType TargetDtoType => DtoType.NormalMove;
-        public MoveType TargetMoveType => MoveType.NormalMove;
+        protected override Position GetFromPosition(DtoNormalMove dto) => dto.FromPos;
 
-        public Move GetMoveFromDTO(IDtoMessage message)
+        protected override Move? FindMove(IEnumerable<Move> legalMoves, DtoNormalMove dto)
         {
-            var dto = (DtoNormalMove)message;
-            var legalMoves = _gameService.GetLegalMoves(dto.FromPos);
-            var localMove = legalMoves.FirstOrDefault(m => m.ToPos == dto.ToPos && m.Type == MoveType.NormalMove);
-
-            return localMove ?? throw new InvalidOperationException("Нелегальний звичайний хід.");
+            return legalMoves.FirstOrDefault(m =>
+                m.ToPos == dto.ToPos && m.Type == TargetMoveType);
         }
 
-        public IDtoMessage GetMoveToDTO(Move move)
+        protected override string GetErrorMessage() => "Нелегальний звичайний хід.";
+
+        public override IDtoMessage GetMoveToDTO(Move move)
         {
             return new DtoNormalMove(move.FromPos, move.ToPos);
         }

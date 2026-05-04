@@ -5,27 +5,26 @@ using ChessApplication.Interfaces.Network;
 using ChessLibrary.Enums;
 using ChessLibrary.Moves;
 using ChessLibrary.Moves.PawnMoves;
+using ChessLibrary.ValueObjects;
 
 namespace ChessInfrastructure.DTO.Factories
 {
-    public class DtoPromotionMoveFactory : ISpecificDtoMoveFactory
+    /// <summary>
+    /// Фабрика для ходу з перетворенням пішака.
+    /// </summary>
+    public class DtoPromotionMoveFactory : BaseDtoMoveFactory<DtoPromotionMove>
     {
-        private readonly IGameService _gameService;
+        public override DtoType TargetDtoType => DtoType.PromotionMove;
+        public override MoveType TargetMoveType => MoveType.PawnPromotion;
 
-        public DtoPromotionMoveFactory(IGameService gameService)
+        public DtoPromotionMoveFactory(IGameService gameService) : base(gameService)
         {
-            _gameService = gameService;
         }
 
-        public DtoType TargetDtoType => DtoType.PromotionMove;
-        public MoveType TargetMoveType => MoveType.PawnPromotion;
+        protected override Position GetFromPosition(DtoPromotionMove dto) => dto.FromPos;
 
-        public Move GetMoveFromDTO(IDtoMessage message)
+        protected override Move? FindMove(IEnumerable<Move> legalMoves, DtoPromotionMove dto)
         {
-            var dto = (DtoPromotionMove)message;
-
-            var legalMoves = _gameService.GetLegalMoves(dto.FromPos);
-
             return legalMoves
                 .OfType<PawnPromotion>()
                 .FirstOrDefault(m =>
@@ -33,10 +32,11 @@ namespace ChessInfrastructure.DTO.Factories
                     m.PromotionPieceType == dto.PromotionPieceType);
         }
 
-        public IDtoMessage GetMoveToDTO(Move move)
+        protected override string GetErrorMessage() => "Нелегальний хід з перетворенням пішака.";
+
+        public override IDtoMessage GetMoveToDTO(Move move)
         {
             var promotion = (PawnPromotion)move;
-
             return new DtoPromotionMove(
                 promotion.FromPos,
                 promotion.ToPos,
