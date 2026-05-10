@@ -13,7 +13,11 @@ namespace ChessLibrary.Moves.Strategies.PawnStrategies
             var player = pawn.Color;
             var forward = player.Forward();
 
-            Position twoStep = from + forward + forward;
+            Position oneStep = from + forward;
+            Position twoStep = oneStep + forward;
+
+            if (!board.IsInside(oneStep) || !board.IsEmpty(oneStep))
+                yield break;
 
             if (!board.IsInside(twoStep) || !board.IsEmpty(twoStep))
                 yield break;
