@@ -1,11 +1,11 @@
-﻿using ChessLibrary.Board;
+using ChessLibrary.Board;
 using ChessLibrary.Enums;
 using ChessLibrary.Game;
 using ChessLibrary.Rules.Validation;
 
 namespace ChessLibrary.Rules.GameEnd
 {
-    public class StalemateRule : EndGameRuleHandler
+    public class StalemateRule : IEndGameRule
     {
         private readonly IChessRulesEvaluator _rules;
 
@@ -14,7 +14,7 @@ namespace ChessLibrary.Rules.GameEnd
             _rules = rules;
         }
 
-        public override GameResult? Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult? Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             if (!_rules.IsInCheck(board, nextPlayer) &&
                 !_rules.HasAnyLegalMoves(board, nextPlayer))
@@ -22,7 +22,7 @@ namespace ChessLibrary.Rules.GameEnd
                 return new GameResult(Player.None, EndGameTypes.Stalemate);
             }
 
-            return base.Check(board, nextPlayer, history);
+            return null;
         }
     }
 }

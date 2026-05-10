@@ -1,12 +1,12 @@
-﻿using ChessLibrary.Board;
+using ChessLibrary.Board;
 using ChessLibrary.Enums;
 using ChessLibrary.Game;
 
 namespace ChessLibrary.Rules.GameEnd
 {
-    public class RepetitionRule : EndGameRuleHandler
+    public class RepetitionRule : IEndGameRule
     {
-        public override GameResult? Check(
+        public GameResult? Check(
             IBoard board,
             Player nextPlayer,
             IEnumerable<GameStateMemento> history)
@@ -16,7 +16,7 @@ namespace ChessLibrary.Rules.GameEnd
                 return new GameResult(Player.None, EndGameTypes.ThreefoldRepetition);
             }
 
-            return base.Check(board, nextPlayer, history);
+            return null;
         }
 
         private bool IsDrawByRepetition(IEnumerable<GameStateMemento> history)

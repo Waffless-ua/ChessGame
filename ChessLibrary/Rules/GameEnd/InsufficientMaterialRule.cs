@@ -1,20 +1,20 @@
-﻿using ChessLibrary.Board;
+using ChessLibrary.Board;
 using ChessLibrary.Enums;
 using ChessLibrary.Game;
 using ChessLibrary.ValueObjects;
 
 namespace ChessLibrary.Rules.GameEnd
 {
-    public class InsufficientMaterialRule : EndGameRuleHandler
+    public class InsufficientMaterialRule : IEndGameRule
     {
-        public override GameResult? Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
+        public GameResult? Check(IBoard board, Player nextPlayer, IEnumerable<GameStateMemento> history)
         {
             if (IsDrawByInsufficientMaterial(board, history))
             {
                 return new GameResult(Player.None, EndGameTypes.InsufficientMaterial);
             }
 
-            return base.Check(board, nextPlayer, history);
+            return null;
         }
 
         private bool IsDrawByInsufficientMaterial(IBoard board, IEnumerable<GameStateMemento> history)

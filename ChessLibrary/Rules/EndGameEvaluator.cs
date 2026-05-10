@@ -1,4 +1,4 @@
-﻿using ChessLibrary.Board;
+using ChessLibrary.Board;
 using ChessLibrary.Enums;
 using ChessLibrary.Game;
 using ChessLibrary.Rules.GameEnd;
@@ -8,26 +8,25 @@ namespace ChessLibrary.Rules
 {
     public class EndGameEvaluator : IEndGameRulePipeline
     {
-        private readonly EndGameRuleHandler _chain;
+        private readonly IEnumerable<IEndGameRule> _rules;
 
-        public EndGameEvaluator(IChessRulesEvaluator rules)
+        public EndGameEvaluator(IEnumerable<IEndGameRule> rules)
         {
-            var checkmate = new CheckmateRule(rules);
-            var stalemate = new StalemateRule(rules);
-            var repetition = new RepetitionRule();
-            var insufficient = new InsufficientMaterialRule();
-
-            checkmate
-                .SetNext(stalemate)
-                .SetNext(repetition)
-                .SetNext(insufficient);
-
-            _chain = checkmate;
+            _rules = rules;
         }
 
         public GameResult? Evaluate(IBoard board, Player player, IEnumerable<GameStateMemento> history)
         {
-            return _chain.Check(board, player, history);
+            foreach (var rule in _rules)
+            {
+                var result = rule.Check(board, player, history);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }
